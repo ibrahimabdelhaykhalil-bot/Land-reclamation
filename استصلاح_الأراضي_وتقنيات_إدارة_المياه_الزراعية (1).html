@@ -1,0 +1,3445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="aurora">
+  <title>منصة محاكاة المساحة وتسوية الأراضي | قسم هندسة نظم المياه والري - جامعة الأزهر</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+
+      /* Page and surfaces: Royal Deep Navy Glassmorphism */
+      --background: #060f21;
+      --background-radial-1: #0d2454;
+      --background-radial-2: #063830;
+      --surface-container-low: rgba(11, 24, 52, 0.72);
+      --surface-container: rgba(15, 33, 70, 0.68);
+      --surface-container-high: rgba(23, 47, 94, 0.82);
+      --surface-well: rgba(5, 13, 29, 0.85);
+      --surface-white-paper: #fcfaf2;
+      --ink-on-paper: #0f172a;
+
+      /* Text */
+      --on-surface: #f1f5f9;
+      --on-surface-variant: #a8bdd4;
+
+      /* Borders & Glass Hairlines */
+      --outline: rgba(212, 175, 55, 0.45);
+      --outline-variant: rgba(148, 184, 232, 0.2);
+      --outline-emerald: rgba(16, 185, 129, 0.42);
+      --outline-royal: rgba(59, 130, 246, 0.48);
+
+      /* Royal Blue, Emerald Green & Gold Accents */
+      --primary: #3b82f6;
+      --primary-deep: #1d4ed8;
+      --on-primary: #ffffff;
+      --primary-container: rgba(37, 99, 235, 0.22);
+      --on-primary-container: #dbeafe;
+
+      --secondary: #10b981;
+      --tertiary: #34d399;
+      --emerald-tint: rgba(16, 185, 129, 0.16);
+      --royal-tint: rgba(59, 130, 246, 0.16);
+
+      --gold: #f5c451;
+      --gold-deep: #b8860b;
+      --gold-tint: rgba(245, 196, 81, 0.14);
+
+      --positive: #34d399;
+      --warning: #f5c451;
+      --error: #f87171;
+      --error-tint: rgba(248, 113, 113, 0.16);
+      --on-error: #1f0606;
+
+      /* Data series */
+      --data-1: #60a5fa;
+      --data-2: #34d399;
+      --data-3: #f5c451;
+      --data-4: #f87171;
+      --data-context: #475569;
+
+      /* Fonts */
+      --font-headline: 'Cairo', 'Instrument Sans', sans-serif;
+      --font-body: 'Cairo', 'Instrument Sans', sans-serif;
+      --font-label: 'Geist Mono', 'Cairo', monospace;
+
+      /* Shape */
+      --rounded-sm: 0.375rem;
+      --rounded: 0.625rem;
+      --rounded-lg: 1rem;
+      --rounded-xl: 1.375rem;
+      --rounded-full: 9999px;
+
+      /* Effects */
+      --glass-blur: blur(18px);
+      --hairline: 1px solid var(--outline-variant);
+      --hairline-gold: 1px solid var(--outline);
+      --hairline-emerald: 1px solid var(--outline-emerald);
+      --panel-gradient: linear-gradient(145deg, rgba(18, 40, 82, 0.78) 0%, rgba(9, 22, 48, 0.84) 100%);
+      --hero-gradient: linear-gradient(135deg, rgba(29, 78, 216, 0.28) 0%, rgba(16, 185, 129, 0.18) 60%, rgba(245, 196, 81, 0.14) 100%);
+      --gold-gradient: linear-gradient(135deg, #f5c451 0%, #d49b27 100%);
+      --royal-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      --emerald-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --glass-shadow: 0 18px 45px rgba(2, 8, 23, 0.55);
+      --focus: #f5c451;
+
+      /* Type scale */
+      --display-size: clamp(1.75rem, 1.3rem + 1.4vw, 2.35rem);
+      --headline-size: clamp(1.25rem, 1.08rem + 0.6vw, 1.55rem);
+      --subhead-size: clamp(1.05rem, 0.98rem + 0.3vw, 1.2rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.78rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+      --space-2xl: 3.5rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      color: var(--on-surface);
+      background-color: var(--background);
+      background-image:
+        radial-gradient(circle at 12% 14%, var(--background-radial-1) 0%, transparent 48%),
+        radial-gradient(circle at 88% 82%, var(--background-radial-2) 0%, transparent 46%);
+      background-attachment: fixed;
+    }
+
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .app-shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: var(--space-md) var(--space-lg) var(--space-2xl);
+      display: grid;
+      gap: var(--space-lg);
+    }
+    .app-shell * { min-width: 0; }
+
+    /* Glass Panels */
+    .glass-panel {
+      background: var(--panel-gradient);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--hairline);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--glass-shadow);
+      padding: var(--space-lg);
+    }
+
+    .glass-panel-gold {
+      background: var(--panel-gradient);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--hairline-gold);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--glass-shadow);
+      padding: var(--space-lg);
+    }
+
+    .well {
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+    }
+
+    /* Institutional Header */
+    .institutional-header {
+      background: var(--hero-gradient);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--hairline-gold);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-lg);
+      box-shadow: var(--glass-shadow);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .header-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      border-bottom: var(--hairline);
+      padding-bottom: var(--space-md);
+    }
+
+    .brand-identity {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      flex: 1 1 320px;
+    }
+
+    .brand-crest {
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+      border-radius: var(--rounded);
+      background: var(--royal-tint);
+      border: var(--hairline-gold);
+      display: grid;
+      place-items: center;
+      color: var(--gold);
+    }
+
+    .brand-titles h1 {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: clamp(1.05rem, 0.95rem + 0.55vw, 1.38rem);
+      font-weight: 800;
+      color: var(--on-surface);
+      line-height: 1.3;
+    }
+
+    .brand-titles .supervision-line {
+      margin: var(--space-xs) 0 0;
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .brand-titles .developer-line {
+      margin: 2px 0 0;
+      color: var(--tertiary);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .header-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: 0.42rem 0.85rem;
+      border-radius: var(--rounded-full);
+      background: var(--emerald-tint);
+      border: var(--hairline-emerald);
+      color: var(--tertiary);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: 0.55rem 1.1rem;
+      border-radius: var(--rounded);
+      border: var(--hairline);
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+      text-decoration: none;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: var(--primary);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--royal-gradient);
+      border-color: var(--outline-royal);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary);
+    }
+
+    .btn-emerald {
+      background: var(--emerald-gradient);
+      border-color: var(--outline-emerald);
+      color: var(--on-primary);
+    }
+
+    .btn-gold {
+      background: var(--gold-gradient);
+      border-color: var(--gold);
+      color: var(--ink-on-paper);
+      font-weight: 700;
+    }
+
+    .btn-outline-gold {
+      background: var(--gold-tint);
+      border-color: var(--outline);
+      color: var(--gold);
+    }
+
+    .btn-danger {
+      background: var(--error-tint);
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    /* Navigation Bar */
+    .main-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-height: 44px;
+      padding: 0.5rem 0.9rem;
+      border-radius: var(--rounded);
+      border: var(--hairline);
+      background: var(--surface-well);
+      color: var(--on-surface-variant);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+    }
+
+    .nav-tab:hover {
+      color: var(--on-surface);
+      border-color: var(--outline-royal);
+    }
+
+    .nav-tab.active {
+      background: var(--primary-container);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* Views */
+    .view-section {
+      display: none;
+      gap: var(--space-lg);
+      animation: fadeSlideIn var(--dur-short) var(--ease-out);
+    }
+    .view-section.active {
+      display: grid;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Login Gate */
+    .login-gate-wrapper {
+      min-height: calc(100vh - 180px);
+      display: grid;
+      place-items: center;
+      padding: var(--space-md) 0;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--panel-gradient);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: var(--hairline-gold);
+      border-radius: var(--rounded-xl);
+      padding: var(--space-xl);
+      box-shadow: var(--glass-shadow);
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    .login-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: var(--rounded-full);
+      font-size: var(--label-size);
+      font-family: var(--font-label);
+      font-weight: 600;
+      background: var(--gold-tint);
+      border: var(--hairline-gold);
+      color: var(--gold);
+    }
+
+    .status-pill.emerald {
+      background: var(--emerald-tint);
+      border: var(--hairline-emerald);
+      color: var(--tertiary);
+    }
+
+    .status-pill.royal {
+      background: var(--royal-tint);
+      border: var(--hairline-royal);
+      color: var(--data-1);
+    }
+
+    /* Form Controls */
+    .field-group {
+      display: grid;
+      gap: 0.4rem;
+    }
+
+    .field-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .input-control {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.55rem 0.85rem;
+      border-radius: var(--rounded);
+      border: var(--hairline);
+      background: var(--surface-well);
+      color: var(--on-surface);
+      font-weight: 500;
+      transition: border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .input-control:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    select.input-control {
+      padding-inline-end: 2rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--gold);
+      cursor: pointer;
+      min-height: 36px;
+    }
+
+    .inline-feedback {
+      min-height: 1.4rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: var(--rounded-sm);
+      padding: 0.45rem 0.75rem;
+      display: none;
+    }
+    .inline-feedback.visible { display: block; }
+    .inline-feedback.error {
+      background: var(--error-tint);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+    .inline-feedback.success {
+      background: var(--emerald-tint);
+      border: var(--hairline-emerald);
+      color: var(--tertiary);
+    }
+
+    /* Grids & Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.35fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .kpi-card {
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-top: 3px solid var(--gold);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      display: grid;
+      gap: 0.3rem;
+    }
+    .kpi-card.emerald { border-top-color: var(--secondary); }
+    .kpi-card.royal { border-top-color: var(--primary); }
+    .kpi-card.error { border-top-color: var(--error); }
+
+    .kpi-label {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-family: var(--font-label);
+      font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.85rem);
+      font-weight: 700;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--gold);
+    }
+    .kpi-card.emerald .kpi-sub { color: var(--tertiary); }
+    .kpi-card.royal .kpi-sub { color: var(--data-1); }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      border-bottom: var(--hairline);
+      padding-bottom: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 800;
+      color: var(--on-surface);
+    }
+
+    .section-head p {
+      margin: 0.25rem 0 0;
+      color: var(--on-surface-variant);
+      font-size: 0.92rem;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--rounded);
+      border: var(--hairline);
+      background: var(--surface-well);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      padding: 0.65rem 0.75rem;
+      border-bottom: var(--hairline);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th {
+      background: var(--surface-container-high);
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    td input.table-num {
+      width: 76px;
+      padding: 0.3rem 0.45rem;
+      text-align: center;
+      border-radius: var(--rounded-sm);
+      border: var(--hairline);
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: 0.85rem;
+    }
+
+    /* Telescope Eyepiece */
+    .telescope-stage {
+      display: grid;
+      gap: var(--space-md);
+      justify-items: center;
+    }
+
+    .eyepiece-frame {
+      position: relative;
+      width: min(380px, 100%);
+      aspect-ratio: 1 / 1;
+      border-radius: var(--rounded-full);
+      border: 6px solid var(--gold);
+      background: var(--surface-white-paper);
+      overflow: hidden;
+      box-shadow: inset 0 0 40px rgba(6, 15, 33, 0.55), var(--glass-shadow);
+    }
+
+    .eyepiece-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .viz-box {
+      width: 100%;
+      min-height: 330px;
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-sm);
+      position: relative;
+    }
+
+    .viz-canvas {
+      width: 100%;
+      height: 320px;
+      display: block;
+    }
+
+    /* Grid Leveling Matrix */
+    .grid-matrix {
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .grid-node-cell {
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: 0.55rem;
+      display: grid;
+      gap: 0.25rem;
+      text-align: center;
+    }
+    .grid-node-cell.cut-node {
+      border-color: var(--outline);
+      background: var(--gold-tint);
+    }
+    .grid-node-cell.fill-node {
+      border-color: var(--outline-emerald);
+      background: var(--emerald-tint);
+    }
+
+    /* Quiz Options */
+    .quiz-card {
+      background: var(--surface-well);
+      border: var(--hairline);
+      border-radius: var(--rounded);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: 0.75rem 1rem;
+      border-radius: var(--rounded);
+      border: var(--hairline);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      cursor: pointer;
+      text-align: start;
+      transition: border-color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .quiz-option:hover {
+      border-color: var(--primary);
+    }
+    .quiz-option.selected {
+      background: var(--primary-container);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .quiz-option.correct {
+      background: var(--emerald-tint);
+      border-color: var(--secondary);
+      color: var(--tertiary);
+    }
+    .quiz-option.wrong {
+      background: var(--error-tint);
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    /* Certificate */
+    .certificate-frame {
+      background: var(--surface-white-paper);
+      color: var(--ink-on-paper);
+      border: 6px double var(--gold-deep);
+      border-radius: var(--rounded);
+      padding: var(--space-xl);
+      display: grid;
+      gap: var(--space-md);
+      text-align: center;
+      box-shadow: var(--glass-shadow);
+    }
+
+    .certificate-inner-border {
+      border: 2px solid var(--primary-deep);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .cert-signatures {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-lg);
+      margin-top: var(--space-md);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--gold-deep);
+    }
+
+    /* Footer */
+    .app-footer {
+      border-top: var(--hairline-gold);
+      padding-top: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      color: var(--on-surface-variant);
+      font-size: 0.85rem;
+    }
+
+    .formula-box {
+      background: var(--surface-well);
+      border-inline-start: 4px solid var(--gold);
+      border-radius: var(--rounded-sm);
+      padding: var(--space-md);
+      font-family: var(--font-label);
+      font-size: 0.88rem;
+      color: var(--gold);
+      overflow-x: auto;
+    }
+
+    .row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: flex-end;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 900px) {
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app-shell {
+        padding: var(--space-sm) var(--space-sm) var(--space-xl);
+      }
+      .glass-panel, .glass-panel-gold, .institutional-header, .login-card {
+        padding: var(--space-md);
+      }
+      .header-top-row {
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Institutional Header -->
+    <header class="institutional-header">
+      <div class="header-top-row">
+        <div class="brand-identity">
+          <div class="brand-crest" aria-hidden="true">
+            <i data-lucide="compass" style="width: 30px; height: 30px;"></i>
+          </div>
+          <div class="brand-titles">
+            <h1 data-i18n="deptTitle">قسم هندسة نظم المياه والري - كلية الهندسة الزراعية - جامعة الأزهر بالقاهرة</h1>
+            <p class="supervision-line" data-i18n="supervisorTitle">إشراف الأستاذ الدكتور / عاطف موسى إبراهيم</p>
+            <p class="developer-line" data-i18n="developerTitle">Prepared &amp; Developed by Eng. Ibrahim Mohamed - Water Systems Engineer</p>
+          </div>
+        </div>
+        <div class="header-controls">
+          <span id="header-user-chip" class="user-chip hidden">
+            <i data-lucide="shield-check" style="width: 15px; height: 15px;"></i>
+            <span id="header-username">eng_ibrahim</span>
+          </span>
+          <button type="button" class="btn btn-outline-gold" onclick="toggleLanguage()" id="lang-toggle-btn">
+            <i data-lucide="languages" style="width: 17px; height: 17px;"></i>
+            <span id="lang-btn-label">EN / العربية</span>
+          </button>
+          <button type="button" class="btn btn-danger hidden" onclick="handleLogout(this)" id="logout-btn">
+            <i data-lucide="log-out" style="width: 17px; height: 17px;"></i>
+            <span data-i18n="logoutBtn">خروج</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Platform Navigation (Unlocked after Login) -->
+      <nav id="main-nav" class="main-nav hidden" aria-label="التنقل الرئيسي">
+        <button type="button" class="nav-tab active" data-page="welcome" onclick="navigateTo('welcome')">
+          <i data-lucide="globe" style="width: 16px; height: 16px;"></i>
+          <span data-i18n="navWelcome">الترحيب الدولي</span>
+        </button>
+        <button type="button" class="nav-tab" data-page="guide" onclick="navigateTo('guide')">
+          <i data-lucide="book-open" style="width: 16px; height: 16px;"></i>
+          <span data-i18n="navGuide">شرح القوائم والأدوات</span>
+        </button>
+        <button type="button" class="nav-tab" data-page="telescope" onclick="navigateTo('telescope')">
+          <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+          <span data-i18n="navTelescope">محاكي الميزان والقامة</span>
+        </button>
+        <button type="button" class="nav-tab" data-page="profile" onclick="navigateTo('profile')">
+          <i data-lucide="trending-up" style="width: 16px; height: 16px;"></i>
+          <span data-i18n="navProfile">القطاع الطولي والحفر والردم</span>
+        </button>
+        <button type="button" class="nav-tab" data-page="grid" onclick="navigateTo('grid')">
+          <i data-lucide="grid" style="width: 16px; height: 16px;"></i>
+          <span data-i18n="navGrid">الميزانية الشبكية والليزر</span>
+        </button>
+        <button type="button" class="nav-tab" data-page="bulldozer" onclick="navigateTo('bulldozer')">
+          <i data-lucide="tractor" style="width: 16px; height: 16px;"></i>
+          <span data-i18n="navBulldozer">حاسبة إنتاجية البلدوزر</span>
+        </button>
+        <button type="button" class="nav-tab" data-page="quiz" onclick="navigateTo('quiz')">
+          <i data-lucide="award" style="width: 16px; height: 16px;"></i>
+          <span data-i18n="navQuiz">الاختبار والشهادة</span>
+        </button>
+      </nav>
+    </header>
+
+    <!-- PAGE 0: AUTHENTICATION GATE -->
+    <main id="login-gate" class="login-gate-wrapper">
+      <section class="login-card" aria-labelledby="login-heading">
+        <div class="login-badge-row">
+          <span class="status-pill">
+            <i data-lucide="lock" style="width: 14px; height: 14px;"></i>
+            <span data-i18n="gateBadge">بوابة الدخول الآمنة</span>
+          </span>
+          <span class="status-pill emerald">Al-Azhar Engineering Lab</span>
+        </div>
+
+        <div>
+          <h2 id="login-heading" style="margin: 0; font-size: var(--display-size); font-weight: 800;" data-i18n="loginTitle">منصة محاكاة المساحة وتسوية الأراضي</h2>
+          <p style="margin: var(--space-xs) 0 0; color: var(--on-surface-variant);" data-i18n="loginSubtitle">أدخل بيانات الاعتماد الهندسية لفتح وحدات المحاكاة التفاعلية والحسابات الميدانية.</p>
+        </div>
+
+        <form onsubmit="handleLogin(event)" style="display: grid; gap: var(--space-md);">
+          <div class="field-group">
+            <label class="field-label" for="login-username">
+              <span data-i18n="usernameLabel">اسم المستخدم (Username)</span>
+              <span style="font-family: var(--font-label); color: var(--gold);">eng_ibrahim</span>
+            </label>
+            <input id="login-username" class="input-control" type="text" autocomplete="username" value="eng_ibrahim" required>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="login-password">
+              <span data-i18n="passwordLabel">كلمة المرور (Password)</span>
+              <span style="font-family: var(--font-label); color: var(--tertiary);">water2026</span>
+            </label>
+            <input id="login-password" class="input-control" type="password" autocomplete="current-password" required>
+          </div>
+
+          <div id="login-feedback" class="inline-feedback" role="alert"></div>
+
+          <div class="row-actions">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+              <i data-lucide="unlock" style="width: 18px; height: 18px;"></i>
+              <span data-i18n="loginBtn">فتح المنصة الهندسية</span>
+            </button>
+            <button type="button" class="btn btn-outline-gold" onclick="fillDemoCredentials()">
+              <i data-lucide="sparkles" style="width: 18px; height: 18px;"></i>
+              <span data-i18n="demoFillBtn">تعبئة سريعة</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="well" style="font-size: 0.84rem; color: var(--on-surface-variant);">
+          <strong style="color: var(--gold);" data-i18n="acceptedCredsTitle">بيانات الدخول المعتمدة:</strong>
+          <div style="margin-top: 4px; font-family: var(--font-label);">
+            <bdi dir="ltr">eng_ibrahim / water2026</bdi> · <bdi dir="ltr">azhar_eng / land2026</bdi> · <bdi dir="ltr">student / survey123</bdi>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- PLATFORM WORKSPACE (7 Pages) -->
+    <div id="platform-workspace" class="hidden" style="display: grid; gap: var(--space-lg);">
+
+      <!-- PAGE 1: INTERNATIONAL WELCOME -->
+      <section id="view-welcome" class="view-section active" aria-labelledby="welcome-heading">
+        <div class="glass-panel-gold" style="background: var(--hero-gradient);">
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-md);">
+            <span class="status-pill"><i data-lucide="landmark" style="width: 14px; height: 14px;"></i> <span data-i18n="azharTag">جامعة الأزهر - القاهرة</span></span>
+            <span class="status-pill emerald"><i data-lucide="droplets" style="width: 14px; height: 14px;"></i> <span data-i18n="waterTag">هندسة نظم المياه والري</span></span>
+            <span class="status-pill royal"><i data-lucide="cpu" style="width: 14px; height: 14px;"></i> <span data-i18n="simTag">معمل محاكاة تفاعلي</span></span>
+          </div>
+          <h2 id="welcome-heading" style="margin: 0; font-size: var(--display-size); font-weight: 800;" data-i18n="welcomeTitle">مرحباً بكم في المنصة الدولية لمحاكاة المساحة وتسوية الأراضي</h2>
+          <p style="margin: var(--space-sm) 0 var(--space-lg); color: var(--on-surface-variant); max-width: 74ch;" data-i18n="welcomeLead">
+            بيئة هندسية تفاعلية متكاملة تربط بين أسس المساحة الطبوغرافية والميزانية الشبكية، وتقنيات التسوية بالليزر، وحسابات معدات استصلاح الأراضي الصحراوية وترشيد مياه الري في مصر والوطن العربي.
+          </p>
+          <div class="row-actions">
+            <button type="button" class="btn btn-gold" onclick="navigateTo('telescope')">
+              <i data-lucide="play" style="width: 18px; height: 18px;"></i>
+              <span data-i18n="startSimBtn">ابدأ بمحاكي الميزان والقامة</span>
+            </button>
+            <button type="button" class="btn btn-primary" onclick="navigateTo('guide')">
+              <i data-lucide="book-open" style="width: 18px; height: 18px;"></i>
+              <span data-i18n="openGuideBtn">تصفح دليل القوائم والمعادلات</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Source-Grounded Engineering Context KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card royal">
+            <span class="kpi-label" data-i18n="kpiNileLabel">حصة مصر من مياه النيل</span>
+            <span class="kpi-value"><bdi dir="ltr">55.5</bdi> <small style="font-size: 0.7em;" data-i18n="billionM3">مليار م³</small></span>
+            <span class="kpi-sub" data-i18n="kpiNileSub">العامل المحدد لأي توسع أفقي زراعي</span>
+          </div>
+          <div class="kpi-card emerald">
+            <span class="kpi-label" data-i18n="kpiIrrigSaveLabel">وفر طرق الري الحديثة</span>
+            <span class="kpi-value"><bdi dir="ltr">40% – 50%</bdi></span>
+            <span class="kpi-sub" data-i18n="kpiIrrigSaveSub">الرش والتنقيط مقارنة بالغمر التقليدي</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label" data-i18n="kpiEarthLimitLabel">الحد الاقتصادي لتحريك التربة</span>
+            <span class="kpi-value"><bdi dir="ltr">1000 – 1300</bdi> <small style="font-size: 0.65em;" data-i18n="m3Feddan">م³/فدان</small></span>
+            <span class="kpi-sub" data-i18n="kpiEarthLimitSub">يعادل 2000–3000 م³/هكتار للتسوية بالجاذبية</span>
+          </div>
+          <div class="kpi-card emerald">
+            <span class="kpi-label" data-i18n="kpiLaserSaveLabel">كفاءة التسوية بالليزر</span>
+            <span class="kpi-value"><bdi dir="ltr">±2 cm</bdi></span>
+            <span class="kpi-sub" data-i18n="kpiLaserSaveSub">توفير 20–30% من مياه الري وانتظام الإنبات</span>
+          </div>
+        </div>
+
+        <!-- Academic & Engineering Highlights -->
+        <div class="card-grid">
+          <article class="glass-panel">
+            <h3 style="margin-top: 0; color: var(--gold);" data-i18n="welCard1Title">الإشراف العلمي والأكاديمي</h3>
+            <p style="color: var(--on-surface-variant);" data-i18n="welCard1Body">
+              تعتمد المنصة على منهجية قسم هندسة نظم المياه والري بكلية الهندسة الزراعية - جامعة الأزهر، تحت إشراف الأستاذ الدكتور عاطف موسى إبراهيم، لتأهيل مهندسي استصلاح الأراضي على الربط بين الرفع المساحي والتنفيذ الميداني.
+            </p>
+          </article>
+          <article class="glass-panel">
+            <h3 style="margin-top: 0; color: var(--tertiary);" data-i18n="welCard2Title">تحديات التربة والمياه في الاستصلاح</h3>
+            <p style="color: var(--on-surface-variant);" data-i18n="welCard2Body">
+              التربة الرملية المفككة ذات النفاذية العالية تتطلب تخطيطاً دقيقاً للميزانية وتقليل تجريف القشرة السطحية، مع ضبط الغسيل المستمر (Leaching) ومراقبة الماء الأرضي وتزهر الأملاح.
+            </p>
+          </article>
+          <article class="glass-panel">
+            <h3 style="margin-top: 0; color: var(--data-1);" data-i18n="welCard3Title">التوسع المستدام والتقنيات الحديثة</h3>
+            <p style="color: var(--on-surface-variant);" data-i18n="welCard3Body">
+              تدعم المحاكاة تطبيقات الميكنة بالليزر والبلدوزر ومعدات تحريك التربة لتقليل زمن وتكلفة التشغيل في مشاريع التوسع مثل شرق العوينات وتوشكى وغرب النوبارية.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- PAGE 2: MENU & TOOL EXPLANATION GUIDE (شرح القوائم) -->
+      <section id="view-guide" class="view-section" aria-labelledby="guide-heading">
+        <div class="glass-panel">
+          <div class="section-head">
+            <div>
+              <h2 id="guide-heading" data-i18n="guideTitle">دليل القوائم وشرح الأدوات الهندسية</h2>
+              <p data-i18n="guideSub">مرجع متكامل لشرح وظائف كل شاشة في المنصة، المعادلات الرياضية الحاكمة، وخطوات التشغيل القياسية.</p>
+            </div>
+            <span class="status-pill"><i data-lucide="compass" style="width: 14px; height: 14px;"></i> <span data-i18n="guideModulesCount">6 وحدات عملية</span></span>
+          </div>
+
+          <div class="card-grid">
+            <div class="well" style="display: grid; gap: var(--space-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--gold);">1. <span data-i18n="navTelescope">محاكي الميزان والقامة</span></strong>
+                <button type="button" class="btn btn-primary" style="min-height: 36px; padding: 0.25rem 0.7rem; font-size: 0.8rem;" onclick="navigateTo('telescope')" data-i18n="openBtn">فتح</button>
+              </div>
+              <p style="margin: 0; font-size: 0.88rem; color: var(--on-surface-variant);" data-i18n="guideItem1">
+                يحاكي منظار ميزان القامة (Level Telescope) بقامات E المترية. تتعلم منه قراءة الأمتار والديسيمترات والسنتيمترات، وحساب المسافة بشعيرات الاستاديا، وحساب منسوب سطح الميزان HI.
+              </p>
+              <div class="formula-box"><bdi dir="ltr">HI = BM + BS  |  RL = HI - FS  |  D = 100 × (Upper - Lower)</bdi></div>
+            </div>
+
+            <div class="well" style="display: grid; gap: var(--space-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--tertiary);">2. <span data-i18n="navProfile">القطاع الطولي والحفر والردم</span></strong>
+                <button type="button" class="btn btn-emerald" style="min-height: 36px; padding: 0.25rem 0.7rem; font-size: 0.8rem;" onclick="navigateTo('profile')" data-i18n="openBtn">فتح</button>
+              </div>
+              <p style="margin: 0; font-size: 0.88rem; color: var(--on-surface-variant);" data-i18n="guideItem2">
+                جدول ميزانية طولية تفاعلي يحسب سطح الميزان والمناسيب تلقائياً مع التحقيق الحسابي، ويرسم القطاع الطولي للأرض الطبيعية وخط التصميم بميل محدد لحساب مكعبات الحفر والردم.
+              </p>
+              <div class="formula-box"><bdi dir="ltr">ΣBS - ΣFS = Last RL - First RL  |  V = W × L × (h₁ + h₂)/2</bdi></div>
+            </div>
+
+            <div class="well" style="display: grid; gap: var(--space-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--data-1);">3. <span data-i18n="navGrid">الميزانية الشبكية والليزر</span></strong>
+                <button type="button" class="btn btn-primary" style="min-height: 36px; padding: 0.25rem 0.7rem; font-size: 0.8rem;" onclick="navigateTo('grid')" data-i18n="openBtn">فتح</button>
+              </div>
+              <p style="margin: 0; font-size: 0.88rem; color: var(--on-surface-variant);" data-i18n="guideItem3">
+                تحليل شبكة المربعات/المستطيلات وحساب منسوب التسوية المتوسط ومكعبات الأتربة بالمعادلة الشبكية، مع محاكي متحرك لعملية التسوية بالليزر بالقصبية ورسم خريطة الحفر والردم.
+              </p>
+              <div class="formula-box"><bdi dir="ltr">V = (S / 4) × (Σa + 2Σb + 3Σc + 4Σd)</bdi></div>
+            </div>
+
+            <div class="well" style="display: grid; gap: var(--space-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--gold);">4. <span data-i18n="navBulldozer">حاسبة إنتاجية البلدوزر</span></strong>
+                <button type="button" class="btn btn-gold" style="min-height: 36px; padding: 0.25rem 0.7rem; font-size: 0.8rem;" onclick="navigateTo('bulldozer')" data-i18n="openBtn">فتح</button>
+              </div>
+              <p style="margin: 0; font-size: 0.88rem; color: var(--on-surface-variant);" data-i18n="guideItem4">
+                تحسب إنتاجية البلدوزر بالساعة (م³/ساعة) بناءً على سعة السلاح، مسافة الدفع، سرعات التقدم والرجوع، معامل التربة، الانحدار، وكفاءة التشغيل، مع ربط مباشر بحجم التسوية.
+              </p>
+              <div class="formula-box"><bdi dir="ltr">P = Q_blade × (60 / T_c) × E × f × g</bdi></div>
+            </div>
+
+            <div class="well" style="display: grid; gap: var(--space-sm);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--tertiary);">5. <span data-i18n="navQuiz">الاختبار والشهادة</span></strong>
+                <button type="button" class="btn btn-emerald" style="min-height: 36px; padding: 0.25rem 0.7rem; font-size: 0.8rem;" onclick="navigateTo('quiz')" data-i18n="openBtn">فتح</button>
+              </div>
+              <p style="margin: 0; font-size: 0.88rem; color: var(--on-surface-variant);" data-i18n="guideItem5">
+                تقييم هندسي من 10 أسئلة شاملة مع تغذية راجعة فورية، يصدر بعد اجتيازه شهادة إتمام رسمية قابلة للطباعة أو التنزيل باسم المتدرب واعتماد القسم والإشراف.
+              </p>
+              <div class="formula-box"><bdi dir="ltr">Pass Threshold ≥ 60% (6 / 10 Questions)</bdi></div>
+            </div>
+
+            <div class="well" style="display: grid; gap: var(--space-sm);">
+              <strong style="color: var(--data-1);" data-i18n="guideTableTitle">مرجع الميول المسموح بها لطرق الري</strong>
+              <ul style="margin: 0; padding-inline-start: 1.2rem; font-size: 0.86rem; color: var(--on-surface-variant); display: grid; gap: 0.3rem;">
+                <li data-i18n="slopeFurrow">الري بالخطوط: أقل من 1% ويفضل أقل من 0.5%.</li>
+                <li data-i18n="slopeCorrug">التعاريج (Corrugations): من 0.5% إلى 12%.</li>
+                <li data-i18n="slopeContour">الخطوط الكونتورية: انحدار جانبي 2–25% وميل الخط 0.5–1%.</li>
+                <li data-i18n="slopePressurized">الري بالضغط (تنقيط/رش): تسامح ضاغط ±10% يقلل تكلفة التسوية.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 3: LEVEL & STAFF TELESCOPE SIMULATOR -->
+      <section id="view-telescope" class="view-section" aria-labelledby="telescope-heading">
+        <div class="glass-panel">
+          <div class="section-head">
+            <div>
+              <h2 id="telescope-heading" data-i18n="teleTitle">محاكي منظار الميزان وقراءة القامة (E-Staff)</h2>
+              <p data-i18n="teleSub">حرّك القامة أو غيّر منسوب الميزان لتقرأ التدريج المتري وتحسب المسافة بالاستاديا ومنسوب النقطة المستهدفة.</p>
+            </div>
+            <div class="row-actions">
+              <button type="button" class="btn btn-outline-gold" onclick="newTelescopeChallenge()">
+                <i data-lucide="shuffle" style="width: 16px; height: 16px;"></i>
+                <span data-i18n="teleChallengeBtn">تحدي قراءة عشوائي</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="split-grid">
+            <!-- Controls & Calculations -->
+            <div style="display: grid; gap: var(--space-md);">
+              <div class="well" style="display: grid; gap: var(--space-md);">
+                <div class="field-group">
+                  <label class="field-label" for="tele-staff-slider">
+                    <span data-i18n="teleReadingSlider">القراءة الوسطى الحقيقية على القامة (م)</span>
+                    <span id="tele-reading-badge" style="font-family: var(--font-label); color: var(--gold);">1.425 m</span>
+                  </label>
+                  <input id="tele-staff-slider" type="range" min="0.400" max="3.600" step="0.005" value="1.425" oninput="syncTeleReadingFromSlider(this.value)">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="tele-dist-slider">
+                    <span data-i18n="teleDistSlider">المسافة الأفقية عن الميزان (م)</span>
+                    <span id="tele-dist-badge" style="font-family: var(--font-label); color: var(--tertiary);">34.0 m</span>
+                  </label>
+                  <input id="tele-dist-slider" type="range" min="10" max="80" step="1" value="34" oninput="syncTeleDistFromSlider(this.value)">
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="tele-focus-slider">
+                    <span data-i18n="teleFocusSlider">ضبط البؤرة (Focus Clearness)</span>
+                    <span id="tele-focus-badge" style="font-family: var(--font-label); color: var(--data-1);">100%</span>
+                  </label>
+                  <input id="tele-focus-slider" type="range" min="0" max="100" step="5" value="100" oninput="updateTelescopeView()">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                  <div class="field-group">
+                    <label class="field-label" for="tele-bm-input" data-i18n="teleBmLabel">منسوب الروبير BM (م)</label>
+                    <input id="tele-bm-input" class="input-control" type="number" step="0.01" value="10.00" oninput="updateTelescopeView()">
+                  </div>
+                  <div class="field-group">
+                    <label class="field-label" for="tele-bs-input" data-i18n="teleBsLabel">القراءة الخلفية BS (م)</label>
+                    <input id="tele-bs-input" class="input-control" type="number" step="0.005" value="1.650" oninput="updateTelescopeView()">
+                  </div>
+                </div>
+
+                <div class="row-actions">
+                  <label style="display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer;">
+                    <input type="checkbox" id="tele-inverted-chk" onchange="updateTelescopeView()">
+                    <span data-i18n="teleInvertedLabel">منظار مقلوب الصورة (Inverted Optics)</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Practice Answer Check -->
+              <div class="well" style="display: grid; gap: var(--space-sm);">
+                <strong style="color: var(--gold);" data-i18n="teleVerifyTitle">اختبر قراءتك للقامة من العدسة</strong>
+                <div class="row-actions">
+                  <div class="field-group" style="flex: 1;">
+                    <label class="field-label" for="tele-user-guess" data-i18n="teleGuessLabel">أدخل القراءة الوسطى التي تراها (م)</label>
+                    <input id="tele-user-guess" class="input-control" type="number" step="0.005" placeholder="1.425">
+                  </div>
+                  <button type="button" class="btn btn-emerald" onclick="verifyTelescopeGuess()" data-i18n="verifyBtn">تحقق من القراءة</button>
+                </div>
+                <div id="tele-guess-feedback" class="inline-feedback"></div>
+              </div>
+
+              <!-- Computed Readouts -->
+              <div class="kpi-grid">
+                <div class="kpi-card">
+                  <span class="kpi-label" data-i18n="teleHiKpi">منسوب سطح الميزان (HI)</span>
+                  <span class="kpi-value" id="tele-hi-val">11.650</span>
+                  <span class="kpi-sub">HI = BM + BS</span>
+                </div>
+                <div class="kpi-card emerald">
+                  <span class="kpi-label" data-i18n="teleRlKpi">منسوب النقطة (RL)</span>
+                  <span class="kpi-value" id="tele-rl-val">10.225</span>
+                  <span class="kpi-sub">RL = HI - Mid</span>
+                </div>
+                <div class="kpi-card royal">
+                  <span class="kpi-label" data-i18n="teleStadiaKpi">قراءتا الاستاديا</span>
+                  <span class="kpi-value" id="tele-stadia-val" style="font-size: 1.05rem;">1.595 / 1.255</span>
+                  <span class="kpi-sub" id="tele-stadia-dist">D = 34.0 m</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Eyepiece Canvas -->
+            <div class="telescope-stage">
+              <div class="eyepiece-frame">
+                <canvas id="eyepiece-canvas" class="eyepiece-canvas" width="420" height="420"></canvas>
+              </div>
+              <div class="well" style="width: 100%; font-size: 0.85rem; color: var(--on-surface-variant);">
+                <strong style="color: var(--tertiary);" data-i18n="teleLegendTitle">دليل القراءة على قامة E:</strong>
+                <span data-i18n="teleLegendText">كل رقم كبير يمثل الديسيمتر (0.10 م)، وكل سن أو فراغ في حرف E يساوي 1 سم (0.01 م)، وتُقدّر المليمترات بالنظر على الشعيرة الأفقية الوسطى.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 4: LONGITUDINAL PROFILE CUT & FILL CALCULATOR -->
+      <section id="view-profile" class="view-section" aria-labelledby="profile-heading">
+        <div class="glass-panel">
+          <div class="section-head">
+            <div>
+              <h2 id="profile-heading" data-i18n="profTitle">القطاع الطولي وحاسبة الحفر والردم</h2>
+              <p data-i18n="profSub">أدخل قراءات الميزانية الطولية وحدد الميل التصميمي للترعة أو الطريق لحساب المناسيب والتحقيق الحسابي ومكعبات الحفر والردم.</p>
+            </div>
+            <div class="row-actions">
+              <button type="button" class="btn btn-outline-gold" onclick="balanceProfileDesign()">
+                <i data-lucide="scale" style="width: 16px; height: 16px;"></i>
+                <span data-i18n="profBalanceBtn">حساب خط التوازن (حفر = ردم)</span>
+              </button>
+              <button type="button" class="btn btn-primary" onclick="resetProfilePreset()">
+                <i data-lucide="rotate-ccw" style="width: 16px; height: 16px;"></i>
+                <span data-i18n="resetSampleBtn">تحميل مثال قياسي</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Profile Design Parameters -->
+          <div class="well" style="margin-bottom: var(--space-lg); display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-md); align-items: end;">
+            <div class="field-group">
+              <label class="field-label" for="prof-bm" data-i18n="profBmLabel">منسوب البداية BM (م)</label>
+              <input id="prof-bm" class="input-control" type="number" step="0.01" value="12.00" oninput="recalcProfile()">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="prof-start-design" data-i18n="profDesignStart">منسوب التصميم عند 0 م (م)</label>
+              <input id="prof-start-design" class="input-control" type="number" step="0.01" value="11.80" oninput="recalcProfile()">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="prof-slope" data-i18n="profSlopeLabel">الميل التصميمي (%)</label>
+              <input id="prof-slope" class="input-control" type="number" step="0.05" value="-0.20" oninput="recalcProfile()">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="prof-width" data-i18n="profWidthLabel">عرض الشريحة / القطاع (م)</label>
+              <input id="prof-width" class="input-control" type="number" step="0.5" min="1" value="10" oninput="recalcProfile()">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="prof-spacing" data-i18n="profSpacingLabel">المسافة بين المحطات (م)</label>
+              <input id="prof-spacing" class="input-control" type="number" step="5" min="5" value="25" oninput="recalcProfile()">
+            </div>
+          </div>
+
+          <!-- KPI Summary -->
+          <div class="kpi-grid" style="margin-bottom: var(--space-lg);">
+            <div class="kpi-card">
+              <span class="kpi-label" data-i18n="profCutVol">إجمالي حجم الحفر (Cut)</span>
+              <span class="kpi-value" id="prof-cut-total">0.0</span>
+              <span class="kpi-sub">m³</span>
+            </div>
+            <div class="kpi-card emerald">
+              <span class="kpi-label" data-i18n="profFillVol">إجمالي حجم الردم (Fill)</span>
+              <span class="kpi-value" id="prof-fill-total">0.0</span>
+              <span class="kpi-sub">m³</span>
+            </div>
+            <div class="kpi-card royal">
+              <span class="kpi-label" data-i18n="profNetVol">صافي الأتربة (Cut - Fill)</span>
+              <span class="kpi-value" id="prof-net-total">0.0</span>
+              <span class="kpi-sub" id="prof-net-note">—</span>
+            </div>
+            <div class="kpi-card emerald">
+              <span class="kpi-label" data-i18n="profCheckLabel">التحقيق الحسابي (Check)</span>
+              <span class="kpi-value" id="prof-check-val" style="font-size: 1.15rem;">OK</span>
+              <span class="kpi-sub" id="prof-check-sub">ΣBS - ΣFS = ΔRL</span>
+            </div>
+          </div>
+
+          <!-- Interactive SVG Profile Chart -->
+          <div class="viz-box" style="margin-bottom: var(--space-lg); min-height: 330px;">
+            <svg id="profile-svg" class="viz-canvas" viewBox="0 0 900 320" preserveAspectRatio="xMidYMid meet" role="img" aria-label="رسم القطاع الطولي"></svg>
+          </div>
+
+          <!-- Leveling Book Table -->
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="colStation">المحطة</th>
+                  <th data-i18n="colDist">المسافة (م)</th>
+                  <th data-i18n="colBS">خلفية BS</th>
+                  <th data-i18n="colIS">متوسطة IS</th>
+                  <th data-i18n="colFS">أمامية FS</th>
+                  <th data-i18n="colHI">سطح الميزان HI</th>
+                  <th data-i18n="colRL">منسوب الأرض RL</th>
+                  <th data-i18n="colDesign">منسوب التصميم</th>
+                  <th data-i18n="colDiff">حفر (+) / ردم (-)</th>
+                </tr>
+              </thead>
+              <tbody id="profile-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 5: GRID LEVELING & LASER CONTROL SIMULATOR -->
+      <section id="view-grid" class="view-section" aria-labelledby="grid-heading">
+        <div class="glass-panel">
+          <div class="section-head">
+            <div>
+              <h2 id="grid-heading" data-i18n="gridTitle">محاكي الميزانية الشبكية والتسوية بالليزر</h2>
+              <p data-i18n="gridSub">حساب منسوب التسوية المتوسط ومكعبات الحفر والردم بالمعادلة الشبكية (س/4)، مع محاكاة حية لوحدة الليزر والقصبية.</p>
+            </div>
+            <div class="row-actions">
+              <button type="button" class="btn btn-outline-gold" onclick="loadTextbookGridExample()">
+                <i data-lucide="book-marked" style="width: 16px; height: 16px;"></i>
+                <span data-i18n="loadBookGridBtn">مثال الكتاب (شبكة 4×3)</span>
+              </button>
+              <button type="button" class="btn btn-emerald" onclick="sendGridVolToBulldozer()">
+                <i data-lucide="arrow-up-right" style="width: 16px; height: 16px;"></i>
+                <span data-i18n="sendToDozerBtn">نقل الحجم لحاسبة البلدوزر</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Grid Parameters -->
+          <div class="well" style="margin-bottom: var(--space-lg); display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-md); align-items: end;">
+            <div class="field-group">
+              <label class="field-label" for="grid-dx" data-i18n="gridDxLabel">عرض المستطيل ΔX (م)</label>
+              <input id="grid-dx" class="input-control" type="number" min="10" max="100" step="5" value="40" oninput="recalcGrid()">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="grid-dy" data-i18n="gridDyLabel">طول المستطيل ΔY (م)</label>
+              <input id="grid-dy" class="input-control" type="number" min="10" max="100" step="5" value="30" oninput="recalcGrid()">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="grid-target-mode" data-i18n="gridModeLabel">طريقة تحديد منسوب التسوية</label>
+              <select id="grid-target-mode" class="input-control" onchange="recalcGrid()">
+                <option value="mean" data-i18n="modeMean">منسوب التسوية المتوسط (أقل تكلفة)</option>
+                <option value="custom" data-i18n="modeCustom">منسوب تصميمي محدد يدوياً</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="grid-custom-rl" data-i18n="gridCustomRlLabel">المنسوب المطلوب (م)</label>
+              <input id="grid-custom-rl" class="input-control" type="number" step="0.05" value="4.00" oninput="recalcGrid()">
+            </div>
+          </div>
+
+          <!-- Grid KPIs -->
+          <div class="kpi-grid" style="margin-bottom: var(--space-lg);">
+            <div class="kpi-card royal">
+              <span class="kpi-label" data-i18n="gridCellArea">مساحة المستطيل (س)</span>
+              <span class="kpi-value" id="grid-area-val">1200 m²</span>
+              <span class="kpi-sub" id="grid-total-area">الإجمالي: 7200 m² (1.71 فدان)</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label" data-i18n="gridMeanRl">منسوب التسوية المستهدف</span>
+              <span class="kpi-value" id="grid-target-val">3.20 m</span>
+              <span class="kpi-sub">∑(a+2b+3c+4d) / 4N</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label" data-i18n="gridCutVol">مكعب الحفر الإجمالي</span>
+              <span class="kpi-value" id="grid-cut-val">0 m³</span>
+              <span class="kpi-sub" id="grid-cut-per-feddan">0 m³/فدان</span>
+            </div>
+            <div class="kpi-card emerald">
+              <span class="kpi-label" data-i18n="gridFillVol">مكعب الردم الإجمالي</span>
+              <span class="kpi-value" id="grid-fill-val">0 m³</span>
+              <span class="kpi-sub" data-i18n="gridEconCheck">تقييم الجدوى الاقتصادية</span>
+            </div>
+          </div>
+
+          <div class="split-grid">
+            <!-- Editable 3x4 Grid Nodes -->
+            <div class="well" style="display: grid; gap: var(--space-md);">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: var(--gold);" data-i18n="gridNodesHeader">مناسيب نقاط الشبكة (3 صفوف × 4 أعمدة = 6 مستطيلات)</strong>
+              </div>
+              <div id="grid-nodes-container" class="grid-matrix" style="grid-template-columns: repeat(4, minmax(0, 1fr));"></div>
+              <div class="formula-box" id="grid-formula-breakdown" style="font-size: 0.82rem;"></div>
+            </div>
+
+            <!-- Interactive Laser Leveling Canvas Simulator -->
+            <div class="well" style="display: grid; gap: var(--space-md);">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-sm);">
+                <strong style="color: var(--tertiary);" data-i18n="laserSimHeader">محاكي التسوية بالليزر (Laser Scraper Simulator)</strong>
+                <div class="row-actions">
+                  <button type="button" class="btn btn-emerald" id="laser-toggle-btn" onclick="toggleLaserSimulation()">
+                    <i data-lucide="play" style="width: 16px; height: 16px;"></i>
+                    <span id="laser-btn-text" data-i18n="laserStartBtn">تشغيل القصبية بالليزر</span>
+                  </button>
+                  <button type="button" class="btn" onclick="resetLaserSimulation()">
+                    <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="viz-box" style="min-height: 290px;">
+                <canvas id="laser-canvas" class="viz-canvas" style="height: 280px;" width="640" height="280"></canvas>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.84rem; color: var(--on-surface-variant);">
+                <span id="laser-status-text" data-i18n="laserIdleStatus">الحالة: جاهز — جهاز الإرسال الليزري يبث مستوى مرجعي ثابت.</span>
+                <span id="laser-progress-pct" style="font-family: var(--font-label); color: var(--gold);">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 6: BULLDOZER PRODUCTIVITY CALCULATOR -->
+      <section id="view-bulldozer" class="view-section" aria-labelledby="dozer-heading">
+        <div class="glass-panel">
+          <div class="section-head">
+            <div>
+              <h2 id="dozer-heading" data-i18n="dozerTitle">حاسبة إنتاجية البلدوزر ومعدات التسوية</h2>
+              <p data-i18n="dozerSub">احسب الإنتاجية الفعلية بالساعة وزمن التنفيذ والتكلفة التقديرية بناءً على سعة السلاح، مسافة الدفع، ومعاملات الموقع.</p>
+            </div>
+            <div class="row-actions">
+              <button type="button" class="btn btn-outline-gold" onclick="setDozerPreset('light')" data-i18n="dozerPresetLight">حالة رملية خفيفة (D6)</button>
+              <button type="button" class="btn btn-primary" onclick="setDozerPreset('heavy')" data-i18n="dozerPresetHeavy">تسوية ثقيلة (D8R)</button>
+            </div>
+          </div>
+
+          <div class="split-grid">
+            <!-- Inputs -->
+            <div class="well" style="display: grid; gap: var(--space-md);">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                <div class="field-group">
+                  <label class="field-label" for="dozer-blade" data-i18n="dozerBladeLabel">سعة السلاح النظرية Q (م³)</label>
+                  <input id="dozer-blade" class="input-control" type="number" step="0.2" min="1" max="20" value="4.2" oninput="recalcBulldozer()">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="dozer-dist" data-i18n="dozerDistLabel">متوسط مسافة الدفع D (م)</label>
+                  <input id="dozer-dist" class="input-control" type="number" step="5" min="10" max="150" value="40" oninput="recalcBulldozer()">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="dozer-vf" data-i18n="dozerVfLabel">سرعة التقدم محملاً Vf (كم/س)</label>
+                  <input id="dozer-vf" class="input-control" type="number" step="0.2" min="1.5" max="8" value="3.2" oninput="recalcBulldozer()">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="dozer-vr" data-i18n="dozerVrLabel">سرعة الرجوع فارغاً Vr (كم/س)</label>
+                  <input id="dozer-vr" class="input-control" type="number" step="0.5" min="3" max="14" value="6.5" oninput="recalcBulldozer()">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="dozer-soil" data-i18n="dozerSoilLabel">معامل التربة والسلاح (f)</label>
+                  <select id="dozer-soil" class="input-control" onchange="recalcBulldozer()">
+                    <option value="0.95" data-i18n="soilSand">تربة رملية مفككة (0.95)</option>
+                    <option value="0.80" selected data-i18n="soilLoam">تربة طميية / متوسطة (0.80)</option>
+                    <option value="0.65" data-i18n="soilClay">طينية متماسكة / صخرية مفككة (0.65)</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="dozer-eff" data-i18n="dozerEffLabel">كفاءة التشغيل الزمنية (E)</label>
+                  <select id="dozer-eff" class="input-control" onchange="recalcBulldozer()">
+                    <option value="0.83" selected data-i18n="eff50">ممتازة: 50 دقيقة/ساعة (0.83)</option>
+                    <option value="0.75" data-i18n="eff45">قياسية: 45 دقيقة/ساعة (0.75)</option>
+                    <option value="0.67" data-i18n="eff40">متوسطة: 40 دقيقة/ساعة (0.67)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="dozer-grade-slider">
+                  <span data-i18n="dozerGradeLabel">انحدار مسار الدفع (%) (+ هبوط مساعد / - صعود)</span>
+                  <span id="dozer-grade-badge" style="font-family: var(--font-label); color: var(--gold);">0%</span>
+                </label>
+                <input id="dozer-grade-slider" type="range" min="-10" max="10" step="1" value="0" oninput="recalcBulldozer()">
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                <div class="field-group">
+                  <label class="field-label" for="dozer-total-vol" data-i18n="dozerVolLabel">إجمالي حجم التربة المطلوب (م³)</label>
+                  <input id="dozer-total-vol" class="input-control" type="number" step="50" min="100" value="3200" oninput="recalcBulldozer()">
+                </div>
+                <div class="field-group">
+                  <label class="field-label" for="dozer-rate" data-i18n="dozerRateLabel">تكلفة ساعة التشغيل (جنيه/ساعة)</label>
+                  <input id="dozer-rate" class="input-control" type="number" step="100" min="200" value="1800" oninput="recalcBulldozer()">
+                </div>
+              </div>
+            </div>
+
+            <!-- Results & Production Curve -->
+            <div style="display: grid; gap: var(--space-md);">
+              <div class="kpi-grid">
+                <div class="kpi-card emerald">
+                  <span class="kpi-label" data-i18n="dozerProdKpi">الإنتاجية الفعلية (P)</span>
+                  <span class="kpi-value" id="dozer-prod-val">0.0</span>
+                  <span class="kpi-sub">m³/hr</span>
+                </div>
+                <div class="kpi-card royal">
+                  <span class="kpi-label" data-i18n="dozerCycleKpi">زمن الدورة الواحدة (Tc)</span>
+                  <span class="kpi-value" id="dozer-cycle-val">0.00</span>
+                  <span class="kpi-sub" data-i18n="minutesUnit">دقيقة / دورة</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label" data-i18n="dozerHoursKpi">ساعات العمل المطلوبة</span>
+                  <span class="kpi-value" id="dozer-hours-val">0.0</span>
+                  <span class="kpi-sub" id="dozer-days-sub">0 يوم عمل</span>
+                </div>
+                <div class="kpi-card">
+                  <span class="kpi-label" data-i18n="dozerCostKpi">التكلفة الإجمالية التقديرية</span>
+                  <span class="kpi-value" id="dozer-cost-val">0</span>
+                  <span class="kpi-sub" id="dozer-unit-cost">0 جنيه/م³</span>
+                </div>
+              </div>
+
+              <div class="viz-box" style="min-height: 290px;">
+                <svg id="dozer-curve-svg" class="viz-canvas" style="height: 280px;" viewBox="0 0 640 280" preserveAspectRatio="xMidYMid meet"></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGE 7: INTERACTIVE QUIZ & CERTIFICATE OF COMPLETION -->
+      <section id="view-quiz" class="view-section" aria-labelledby="quiz-heading">
+        <div class="glass-panel">
+          <div class="section-head">
+            <div>
+              <h2 id="quiz-heading" data-i18n="quizTitle">الاختبار الهندسي التفاعلي وشهادة الإتمام</h2>
+              <p data-i18n="quizSub">أجب عن الأسئلة العشرة لإثبات إتقانك لمفاهيم المساحة وتسوية الأراضي وإصدار شهادتك المعتمدة.</p>
+            </div>
+            <div class="row-actions">
+              <span class="status-pill emerald" id="quiz-score-pill">0 / 10</span>
+              <button type="button" class="btn btn-outline-gold" onclick="resetQuiz(this)" data-i18n="resetQuizBtn">إعادة الاختبار</button>
+            </div>
+          </div>
+
+          <div class="well" style="margin-bottom: var(--space-lg); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-md); align-items: end;">
+            <div class="field-group">
+              <label class="field-label" for="cert-trainee-name" data-i18n="traineeNameLabel">اسم المتدرب / المهندس في الشهادة</label>
+              <input id="cert-trainee-name" class="input-control" type="text" value="المهندس / إبراهيم محمد" oninput="updateCertificatePreview()">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="cert-affiliation" data-i18n="traineeAffilLabel">الفرقة / التخصص الهندسي</label>
+              <input id="cert-affiliation" class="input-control" type="text" value="قسم هندسة نظم المياه والري - جامعة الأزهر" oninput="updateCertificatePreview()">
+            </div>
+          </div>
+
+          <div id="quiz-container" style="display: grid; gap: var(--space-md); margin-bottom: var(--space-xl);"></div>
+
+          <!-- Certificate Section -->
+          <div id="certificate-panel" class="glass-panel-gold" style="display: grid; gap: var(--space-md);">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-md);">
+              <div>
+                <h3 style="margin: 0; color: var(--gold);" data-i18n="certSectionTitle">معاينة شهادة الإتمام</h3>
+                <p id="cert-eligibility-msg" style="margin: 4px 0 0; font-size: 0.88rem; color: var(--on-surface-variant);" data-i18n="certLockedMsg">أحرز 60% على الأقل (6 من 10) لفتح تنزيل الشهادة الرسمية.</p>
+              </div>
+              <div class="row-actions">
+                <button type="button" class="btn btn-gold" id="download-cert-btn" onclick="downloadCertificatePng()" disabled>
+                  <i data-lucide="download" style="width: 17px; height: 17px;"></i>
+                  <span data-i18n="downloadCertBtn">تحميل الشهادة (PNG)</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="certificate-frame" id="certificate-preview">
+              <div class="certificate-inner-border">
+                <div style="font-weight: 800; color: var(--primary-deep); font-size: 1rem;" data-i18n="certUniHeader">
+                  جامعة الأزهر بالقاهرة • كلية الهندسة الزراعية • قسم هندسة نظم المياه والري
+                </div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: var(--gold-deep);" data-i18n="certMainTitle">
+                  شهادة إتمام واجتياز برنامج المحاكاة
+                </div>
+                <div style="font-size: 0.95rem;" data-i18n="certGrantText">
+                  يشهد قسم هندسة نظم المياه والري بأن المهندس / المتدرب:
+                </div>
+                <div id="cert-name-display" style="font-size: 1.6rem; font-weight: 800; color: var(--primary-deep);">
+                  المهندس / إبراهيم محمد
+                </div>
+                <div id="cert-affil-display" style="font-size: 0.92rem; color: var(--ink-on-paper);">
+                  قسم هندسة نظم المياه والري - جامعة الأزهر
+                </div>
+                <div style="font-size: 0.95rem;" data-i18n="certBodyText">
+                  قد أتم بنجاح تدريبات منصة محاكاة المساحة وتسوية الأراضي والليزر وحساب إنتاجية معدات تحريك التربة
+                </div>
+                <div style="font-family: var(--font-label); font-weight: 700; color: var(--primary-deep);">
+                  <span data-i18n="certScoreLabel">التقدير / الدرجة:</span> <span id="cert-score-display">0 / 10 (0%)</span> • <span id="cert-date-display">2026-11-14</span>
+                </div>
+                <div class="cert-signatures">
+                  <div>
+                    <div style="font-weight: 700;" data-i18n="certSupLabel">الإشراف العلمي</div>
+                    <div style="color: var(--primary-deep); font-weight: 700;" data-i18n="certSupName">أ.د / عاطف موسى إبراهيم</div>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700;" data-i18n="certDevLabel">إعداد وتطوير المنصة</div>
+                    <div style="color: var(--primary-deep); font-weight: 700;" data-i18n="certDevName">م / إبراهيم محمد - مهندس نظم المياه</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div>
+        <strong style="color: var(--gold);" data-i18n="copyrightText">جميع الحقوق محفوظة للمهندس إبراهيم محمد</strong>
+        <span style="margin-inline-start: 0.5rem;">© 2026</span>
+      </div>
+      <div style="font-size: 0.82rem;" data-i18n="sourcesCredit">
+        المراجع العلمية: مقررات هندسة استصلاح الأراضي والميزانية والتسوية بالليزر والبلدوزر — كلية الهندسة الزراعية، جامعة الأزهر.
+      </div>
+    </footer>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    /* ================================================================
+       STATE & I18N DICTIONARY
+       ================================================================ */
+    const APP_STATE = {
+      lang: 'ar',
+      loggedIn: false,
+      username: 'eng_ibrahim',
+      activePage: 'welcome',
+      profileRows: [
+        { st: 'A (BM)', dist: 0, bs: 1.85, is: '', fs: '', ground: 12.00 },
+        { st: 'P1', dist: 25, bs: '', is: 1.55, fs: '', ground: 12.30 },
+        { st: 'P2', dist: 50, bs: '', is: 1.25, fs: '', ground: 12.60 },
+        { st: 'TP1', dist: 75, bs: 2.10, is: '', fs: 1.40, ground: 12.45 },
+        { st: 'P4', dist: 100, bs: '', is: 2.35, fs: '', ground: 12.20 },
+        { st: 'P5', dist: 125, bs: '', is: 2.65, fs: '', ground: 11.90 },
+        { st: 'P6', dist: 150, bs: '', is: '', fs: 2.95, ground: 11.60 }
+      ],
+      gridNodes: [
+        4.6, 4.8, 4.3, 4.1,
+        4.2, 4.3, 4.0, 3.8,
+        3.5, 3.8, 3.6, 3.4
+      ],
+      quizAnswers: {},
+      laserRunning: false,
+      laserProgress: 0,
+      laserAnimId: null,
+      laserTerrain: [],
+      laserInitial: []
+    };
+
+    const VALID_CREDENTIALS = {
+      'eng_ibrahim': 'water2026',
+      'azhar_eng': 'land2026',
+      'student': 'survey123'
+    };
+
+    const I18N = {
+      ar: {
+        deptTitle: `قسم هندسة نظم المياه والري - كلية الهندسة الزراعية - جامعة الأزهر بالقاهرة`,
+        supervisorTitle: `إشراف الأستاذ الدكتور / عاطف موسى إبراهيم`,
+        developerTitle: `Prepared & Developed by Eng. Ibrahim Mohamed - Water Systems Engineer`,
+        logoutBtn: `خروج`,
+        navWelcome: `الترحيب الدولي`,
+        navGuide: `شرح القوائم والأدوات`,
+        navTelescope: `محاكي الميزان والقامة`,
+        navProfile: `القطاع الطولي والحفر والردم`,
+        navGrid: `الميزانية الشبكية والليزر`,
+        navBulldozer: `حاسبة إنتاجية البلدوزر`,
+        navQuiz: `الاختبار والشهادة`,
+        gateBadge: `بوابة الدخول الآمنة`,
+        loginTitle: `منصة محاكاة المساحة وتسوية الأراضي`,
+        loginSubtitle: `أدخل بيانات الاعتماد الهندسية لفتح وحدات المحاكاة التفاعلية والحسابات الميدانية.`,
+        usernameLabel: `اسم المستخدم (Username)`,
+        passwordLabel: `كلمة المرور (Password)`,
+        loginBtn: `فتح المنصة الهندسية`,
+        demoFillBtn: `تعبئة سريعة`,
+        acceptedCredsTitle: `بيانات الدخول المعتمدة:`,
+        azharTag: `جامعة الأزهر - القاهرة`,
+        waterTag: `هندسة نظم المياه والري`,
+        simTag: `معمل محاكاة تفاعلي`,
+        welcomeTitle: `مرحباً بكم في المنصة الدولية لمحاكاة المساحة وتسوية الأراضي`,
+        welcomeLead: `بيئة هندسية تفاعلية متكاملة تربط بين أسس المساحة الطبوغرافية والميزانية الشبكية، وتقنيات التسوية بالليزر، وحسابات معدات استصلاح الأراضي الصحراوية وترشيد مياه الري في مصر والوطن العربي.`,
+        startSimBtn: `ابدأ بمحاكي الميزان والقامة`,
+        openGuideBtn: `تصفح دليل القوائم والمعادلات`,
+        kpiNileLabel: `حصة مصر من مياه النيل`,
+        billionM3: `مليار م³`,
+        kpiNileSub: `العامل المحدد لأي توسع أفقي زراعي`,
+        kpiIrrigSaveLabel: `وفر طرق الري الحديثة`,
+        kpiIrrigSaveSub: `الرش والتنقيط مقارنة بالغمر التقليدي`,
+        kpiEarthLimitLabel: `الحد الاقتصادي لتحريك التربة`,
+        m3Feddan: `م³/فدان`,
+        kpiEarthLimitSub: `يعادل 2000–3000 م³/هكتار للتسوية بالجاذبية`,
+        kpiLaserSaveLabel: `كفاءة التسوية بالليزر`,
+        kpiLaserSaveSub: `توفير 20–30% من مياه الري وانتظام الإنبات`,
+        welCard1Title: `الإشراف العلمي والأكاديمي`,
+        welCard1Body: `تعتمد المنصة على منهجية قسم هندسة نظم المياه والري بكلية الهندسة الزراعية - جامعة الأزهر، تحت إشراف الأستاذ الدكتور عاطف موسى إبراهيم، لتأهيل مهندسي استصلاح الأراضي على الربط بين الرفع المساحي والتنفيذ الميداني.`,
+        welCard2Title: `تحديات التربة والمياه في الاستصلاح`,
+        welCard2Body: `التربة الرملية المفككة ذات النفاذية العالية تتطلب تخطيطاً دقيقاً للميزانية وتقليل تجريف القشرة السطحية، مع ضبط الغسيل المستمر (Leaching) ومراقبة الماء الأرضي وتزهر الأملاح.`,
+        welCard3Title: `التوسع المستدام والتقنيات الحديثة`,
+        welCard3Body: `تدعم المحاكاة تطبيقات الميكنة بالليزر والبلدوزر ومعدات تحريك التربة لتقليل زمن وتكلفة التشغيل في مشاريع التوسع مثل شرق العوينات وتوشكى وغرب النوبارية.`,
+        guideTitle: `دليل القوائم وشرح الأدوات الهندسية`,
+        guideSub: `مرجع متكامل لشرح وظائف كل شاشة في المنصة، المعادلات الرياضية الحاكمة، وخطوات التشغيل القياسية.`,
+        guideModulesCount: `6 وحدات عملية`,
+        openBtn: `فتح`,
+        guideItem1: `يحاكي منظار ميزان القامة (Level Telescope) بقامات E المترية. تتعلم منه قراءة الأمتار والديسيمترات والسنتيمترات، وحساب المسافة بشعيرات الاستاديا، وحساب منسوب سطح الميزان HI.`,
+        guideItem2: `جدول ميزانية طولية تفاعلي يحسب سطح الميزان والمناسيب تلقائياً مع التحقيق الحسابي، ويرسم القطاع الطولي للأرض الطبيعية وخط التصميم بميل محدد لحساب مكعبات الحفر والردم.`,
+        guideItem3: `تحليل شبكة المربعات/المستطيلات وحساب منسوب التسوية المتوسط ومكعبات الأتربة بالمعادلة الشبكية، مع محاكي متحرك لعملية التسوية بالليزر بالقصبية ورسم خريطة الحفر والردم.`,
+        guideItem4: `تحسب إنتاجية البلدوزر بالساعة (م³/ساعة) بناءً على سعة السلاح، مسافة الدفع، سرعات التقدم والرجوع، معامل التربة، الانحدار، وكفاءة التشغيل، مع ربط مباشر بحجم التسوية.`,
+        guideItem5: `تقييم هندسي من 10 أسئلة شاملة مع تغذية راجعة فورية، يصدر بعد اجتيازه شهادة إتمام رسمية قابلة للطباعة أو التنزيل باسم المتدرب واعتماد القسم والإشراف.`,
+        guideTableTitle: `مرجع الميول المسموح بها لطرق الري`,
+        slopeFurrow: `الري بالخطوط: أقل من 1% ويفضل أقل من 0.5%.`,
+        slopeCorrug: `التعاريج (Corrugations): من 0.5% إلى 12%.`,
+        slopeContour: `الخطوط الكونتورية: انحدار جانبي 2–25% وميل الخط 0.5–1%.`,
+        slopePressurized: `الري بالضغط (تنقيط/رش): تسامح ضاغط ±10% يقلل تكلفة التسوية.`,
+        teleTitle: `محاكي منظار الميزان وقراءة القامة (E-Staff)`,
+        teleSub: `حرّك القامة أو غيّر منسوب الميزان لتقرأ التدريج المتري وتحسب المسافة بالاستاديا ومنسوب النقطة المستهدفة.`,
+        teleChallengeBtn: `تحدي قراءة عشوائي`,
+        teleReadingSlider: `القراءة الوسطى الحقيقية على القامة (م)`,
+        teleDistSlider: `المسافة الأفقية عن الميزان (م)`,
+        teleFocusSlider: `ضبط البؤرة (Focus Clearness)`,
+        teleBmLabel: `منسوب الروبير BM (م)`,
+        teleBsLabel: `القراءة الخلفية BS (م)`,
+        teleInvertedLabel: `منظار مقلوب الصورة (Inverted Optics)`,
+        teleVerifyTitle: `اختبر قراءتك للقامة من العدسة`,
+        teleGuessLabel: `أدخل القراءة الوسطى التي تراها (م)`,
+        verifyBtn: `تحقق من القراءة`,
+        teleHiKpi: `منسوب سطح الميزان (HI)`,
+        teleRlKpi: `منسوب النقطة (RL)`,
+        teleStadiaKpi: `قراءتا الاستاديا`,
+        teleLegendTitle: `دليل القراءة على قامة E:`,
+        teleLegendText: `كل رقم كبير يمثل الديسيمتر (0.10 م)، وكل سن أو فراغ في حرف E يساوي 1 سم (0.01 م)، وتُقدّر المليمترات بالنظر على الشعيرة الأفقية الوسطى.`,
+        profTitle: `القطاع الطولي وحاسبة الحفر والردم`,
+        profSub: `أدخل قراءات الميزانية الطولية وحدد الميل التصميمي للترعة أو الطريق لحساب المناسيب والتحقيق الحسابي ومكعبات الحفر والردم.`,
+        profBalanceBtn: `حساب خط التوازن (حفر = ردم)`,
+        resetSampleBtn: `تحميل مثال قياسي`,
+        profBmLabel: `منسوب البداية BM (م)`,
+        profDesignStart: `منسوب التصميم عند 0 م (م)`,
+        profSlopeLabel: `الميل التصميمي (%)`,
+        profWidthLabel: `عرض الشريحة / القطاع (م)`,
+        profSpacingLabel: `المسافة بين المحطات (م)`,
+        profCutVol: `إجمالي حجم الحفر (Cut)`,
+        profFillVol: `إجمالي حجم الردم (Fill)`,
+        profNetVol: `صافي الأتربة (Cut - Fill)`,
+        profCheckLabel: `التحقيق الحسابي (Check)`,
+        colStation: `المحطة`,
+        colDist: `المسافة (م)`,
+        colBS: `خلفية BS`,
+        colIS: `متوسطة IS`,
+        colFS: `أمامية FS`,
+        colHI: `سطح الميزان HI`,
+        colRL: `منسوب الأرض RL`,
+        colDesign: `منسوب التصميم`,
+        colDiff: `حفر (+) / ردم (-)`,
+        gridTitle: `محاكي الميزانية الشبكية والتسوية بالليزر`,
+        gridSub: `حساب منسوب التسوية المتوسط ومكعبات الحفر والردم بالمعادلة الشبكية (س/4)، مع محاكاة حية لوحدة الليزر والقصبية.`,
+        loadBookGridBtn: `مثال الكتاب (شبكة 4×3)`,
+        sendToDozerBtn: `نقل الحجم لحاسبة البلدوزر`,
+        gridDxLabel: `عرض المستطيل ΔX (م)`,
+        gridDyLabel: `طول المستطيل ΔY (م)`,
+        gridModeLabel: `طريقة تحديد منسوب التسوية`,
+        modeMean: `منسوب التسوية المتوسط (أقل تكلفة)`,
+        modeCustom: `منسوب تصميمي محدد يدوياً`,
+        gridCustomRlLabel: `المنسوب المطلوب (م)`,
+        gridCellArea: `مساحة المستطيل (س)`,
+        gridMeanRl: `منسوب التسوية المستهدف`,
+        gridCutVol: `مكعب الحفر الإجمالي`,
+        gridFillVol: `مكعب الردم الإجمالي`,
+        gridEconCheck: `تقييم الجدوى الاقتصادية`,
+        gridNodesHeader: `مناسيب نقاط الشبكة (3 صفوف × 4 أعمدة = 6 مستطيلات)`,
+        laserSimHeader: `محاكي التسوية بالليزر (Laser Scraper Simulator)`,
+        laserStartBtn: `تشغيل القصبية بالليزر`,
+        laserIdleStatus: `الحالة: جاهز — جهاز الإرسال الليزري يبث مستوى مرجعي ثابت.`,
+        dozerTitle: `حاسبة إنتاجية البلدوزر ومعدات التسوية`,
+        dozerSub: `احسب الإنتاجية الفعلية بالساعة وزمن التنفيذ والتكلفة التقديرية بناءً على سعة السلاح، مسافة الدفع، ومعاملات الموقع.`,
+        dozerPresetLight: `حالة رملية خفيفة (D6)`,
+        dozerPresetHeavy: `تسوية ثقيلة (D8R)`,
+        dozerBladeLabel: `سعة السلاح النظرية Q (م³)`,
+        dozerDistLabel: `متوسط مسافة الدفع D (م)`,
+        dozerVfLabel: `سرعة التقدم محملاً Vf (كم/س)`,
+        dozerVrLabel: `سرعة الرجوع فارغاً Vr (كم/س)`,
+        dozerSoilLabel: `معامل التربة والسلاح (f)`,
+        soilSand: `تربة رملية مفككة (0.95)`,
+        soilLoam: `تربة طميية / متوسطة (0.80)`,
+        soilClay: `طينية متماسكة / صخرية مفككة (0.65)`,
+        dozerEffLabel: `كفاءة التشغيل الزمنية (E)`,
+        eff50: `ممتازة: 50 دقيقة/ساعة (0.83)`,
+        eff45: `قياسية: 45 دقيقة/ساعة (0.75)`,
+        eff40: `متوسطة: 40 دقيقة/ساعة (0.67)`,
+        dozerGradeLabel: `انحدار مسار الدفع (%) (+ هبوط مساعد / - صعود)`,
+        dozerVolLabel: `إجمالي حجم التربة المطلوب (م³)`,
+        dozerRateLabel: `تكلفة ساعة التشغيل (جنيه/ساعة)`,
+        dozerProdKpi: `الإنتاجية الفعلية (P)`,
+        dozerCycleKpi: `زمن الدورة الواحدة (Tc)`,
+        minutesUnit: `دقيقة / دورة`,
+        dozerHoursKpi: `ساعات العمل المطلوبة`,
+        dozerCostKpi: `التكلفة الإجمالية التقديرية`,
+        quizTitle: `الاختبار الهندسي التفاعلي وشهادة الإتمام`,
+        quizSub: `أجب عن الأسئلة العشرة لإثبات إتقانك لمفاهيم المساحة وتسوية الأراضي وإصدار شهادتك المعتمدة.`,
+        resetQuizBtn: `إعادة الاختبار`,
+        traineeNameLabel: `اسم المتدرب / المهندس في الشهادة`,
+        traineeAffilLabel: `الفرقة / التخصص الهندسي`,
+        certSectionTitle: `معاينة شهادة الإتمام`,
+        certLockedMsg: `أحرز 60% على الأقل (6 من 10) لفتح تنزيل الشهادة الرسمية.`,
+        downloadCertBtn: `تحميل الشهادة (PNG)`,
+        certUniHeader: `جامعة الأزهر بالقاهرة • كلية الهندسة الزراعية • قسم هندسة نظم المياه والري`,
+        certMainTitle: `شهادة إتمام واجتياز برنامج المحاكاة`,
+        certGrantText: `يشهد قسم هندسة نظم المياه والري بأن المهندس / المتدرب:`,
+        certBodyText: `قد أتم بنجاح تدريبات منصة محاكاة المساحة وتسوية الأراضي والليزر وحساب إنتاجية معدات تحريك التربة`,
+        certScoreLabel: `التقدير / الدرجة:`,
+        certSupLabel: `الإشراف العلمي`,
+        certSupName: `أ.د / عاطف موسى إبراهيم`,
+        certDevLabel: `إعداد وتطوير المنصة`,
+        certDevName: `م / إبراهيم محمد - مهندس نظم المياه`,
+        copyrightText: `جميع الحقوق محفوظة للمهندس إبراهيم محمد`,
+        sourcesCredit: `المراجع العلمية: مقررات هندسة استصلاح الأراضي والميزانية والتسوية بالليزر والبلدوزر — كلية الهندسة الزراعية، جامعة الأزهر.`
+      },
+      en: {
+        deptTitle: `Dept. of Water Systems & Irrigation Engineering - Faculty of Agricultural Engineering - Al-Azhar University, Cairo`,
+        supervisorTitle: `Supervised by Prof. Dr. Atef Moussa Ibrahim`,
+        developerTitle: `Prepared & Developed by Eng. Ibrahim Mohamed - Water Systems Engineer`,
+        logoutBtn: `Logout`,
+        navWelcome: `International Welcome`,
+        navGuide: `Menu & Tool Guide`,
+        navTelescope: `Level & Staff Simulator`,
+        navProfile: `Longitudinal Cut & Fill`,
+        navGrid: `Grid Leveling & Laser`,
+        navBulldozer: `Bulldozer Productivity`,
+        navQuiz: `Quiz & Certificate`,
+        gateBadge: `Secure Engineering Gate`,
+        loginTitle: `Surveying & Land Leveling Simulation Platform`,
+        loginSubtitle: `Enter your engineering credentials to unlock interactive surveying labs and field calculators.`,
+        usernameLabel: `Username`,
+        passwordLabel: `Password`,
+        loginBtn: `Unlock Platform`,
+        demoFillBtn: `Demo Auto-Fill`,
+        acceptedCredsTitle: `Authorized Demo Credentials:`,
+        azharTag: `Al-Azhar University - Cairo`,
+        waterTag: `Water Systems & Irrigation Eng.`,
+        simTag: `Interactive Simulation Lab`,
+        welcomeTitle: `Welcome to the International Surveying & Land Leveling Platform`,
+        welcomeLead: `An integrated engineering simulation environment connecting topographic surveying, grid leveling, precision laser grading, and earthmoving productivity for sustainable land reclamation and water conservation.`,
+        startSimBtn: `Launch Telescope Simulator`,
+        openGuideBtn: `Explore Menu & Equation Guide`,
+        kpiNileLabel: `Egypt's Nile Water Share`,
+        billionM3: `Billion m³`,
+        kpiNileSub: `Primary limiting factor for horizontal expansion`,
+        kpiIrrigSaveLabel: `Modern Irrigation Water Savings`,
+        kpiIrrigSaveSub: `Sprinkler & Drip vs. traditional flood irrigation`,
+        kpiEarthLimitLabel: `Economic Earthwork Threshold`,
+        m3Feddan: `m³/Feddan`,
+        kpiEarthLimitSub: `Equivalent to 2000–3000 m³/ha for gravity leveling`,
+        kpiLaserSaveLabel: `Laser Leveling Precision`,
+        kpiLaserSaveSub: `Saves 20–30% irrigation water & boosts uniformity`,
+        welCard1Title: `Academic & Scientific Supervision`,
+        welCard1Body: `Grounded in the curriculum of Water Systems & Irrigation Engineering at Al-Azhar University under Prof. Dr. Atef Moussa Ibrahim, bridging surveying theory with field reclamation execution.`,
+        welCard2Title: `Soil & Water Reclamation Challenges`,
+        welCard2Body: `Loose sandy soils with high infiltration require careful leveling to avoid stripping topsoil, alongside continuous leaching control and monitoring water-table salinization.`,
+        welCard3Title: `Sustainable Expansion & Laser Tech`,
+        welCard3Body: `Supports laser-controlled scrapers and bulldozer fleet sizing to minimize earthmoving cost across mega projects such as East Oweinat, Toshka, and West Nubaria.`,
+        guideTitle: `Menu & Engineering Tool Explanation Guide`,
+        guideSub: `Comprehensive reference covering every platform module, governing surveying formulas, and operating workflows.`,
+        guideModulesCount: `6 Practical Modules`,
+        openBtn: `Open`,
+        guideItem1: `Simulates an optical surveying level telescope with metric E-pattern staff. Practice reading meters, decimeters, centimeters, stadia distance, and Height of Instrument (HI).`,
+        guideItem2: `Interactive leveling field book computing HI, Reduced Levels (RL), arithmetic checks, and longitudinal profile cut/fill volumes along a designed slope.`,
+        guideItem3: `Grid leveling calculator using the exact (S/4)(Σa+2Σb+3Σc+4Σd) method for mean leveling elevation and zero-contour balance, paired with an animated laser scraper simulator.`,
+        guideItem4: `Computes hourly bulldozer productivity (m³/hr) from blade capacity, haul distance, forward/return speeds, soil/grade factors, and job efficiency.`,
+        guideItem5: `10-question engineering assessment with instant explanations that unlocks a printable/downloadable Certificate of Completion upon scoring ≥ 60%.`,
+        guideTableTitle: `Permissible Slopes by Irrigation Method`,
+        slopeFurrow: `Furrow irrigation: < 1% (preferably < 0.5%).`,
+        slopeCorrug: `Corrugations: 0.5% to 12%.`,
+        slopeContour: `Contour borders: cross slope 2–25%, grade 0.5–1%.`,
+        slopePressurized: `Pressurized (Drip/Sprinkler): ±10% head tolerance lowers leveling cost.`,
+        teleTitle: `Level Telescope & E-Staff Simulator`,
+        teleSub: `Adjust staff position or instrument height to read the metric graduation, stadia intercepts, and target Reduced Level.`,
+        teleChallengeBtn: `Random Reading Challenge`,
+        teleReadingSlider: `True Middle Crosshair Reading (m)`,
+        teleDistSlider: `Horizontal Distance from Level (m)`,
+        teleFocusSlider: `Optical Focus Clearness`,
+        teleBmLabel: `Bench Mark Elevation BM (m)`,
+        teleBsLabel: `Backsight Reading BS (m)`,
+        teleInvertedLabel: `Inverted Telescope Optics`,
+        teleVerifyTitle: `Test Your Eyepiece Reading`,
+        teleGuessLabel: `Enter Middle Crosshair Reading Seen (m)`,
+        verifyBtn: `Verify Reading`,
+        teleHiKpi: `Height of Instrument (HI)`,
+        teleRlKpi: `Target Reduced Level (RL)`,
+        teleStadiaKpi: `Stadia Intercepts`,
+        teleLegendTitle: `E-Staff Reading Guide:`,
+        teleLegendText: `Large numerals mark decimeters (0.10 m); each tooth or gap in the E block equals 1 cm (0.01 m); millimeters are estimated along the horizontal crosshair.`,
+        profTitle: `Longitudinal Profile & Cut/Fill Calculator`,
+        profSub: `Enter leveling readings and design slope for a canal or road centerline to verify arithmetic checks and compute cut/fill volumes.`,
+        profBalanceBtn: `Auto-Balance (Cut = Fill)`,
+        resetSampleBtn: `Load Standard Preset`,
+        profBmLabel: `Starting BM Elevation (m)`,
+        profDesignStart: `Design Level at 0 m (m)`,
+        profSlopeLabel: `Design Slope (%)`,
+        profWidthLabel: `Strip / Formation Width (m)`,
+        profSpacingLabel: `Station Interval (m)`,
+        profCutVol: `Total Cut Volume`,
+        profFillVol: `Total Fill Volume`,
+        profNetVol: `Net Earthwork (Cut - Fill)`,
+        profCheckLabel: `Arithmetic Check`,
+        colStation: `Station`,
+        colDist: `Dist (m)`,
+        colBS: `BS`,
+        colIS: `IS`,
+        colFS: `FS`,
+        colHI: `HI`,
+        colRL: `Ground RL`,
+        colDesign: `Design RL`,
+        colDiff: `Cut (+) / Fill (-)`,
+        gridTitle: `Grid Leveling & Laser Control Simulator`,
+        gridSub: `Computes mean leveling elevation and cut/fill volumes using the (S/4) grid formula alongside an animated laser scraper simulation.`,
+        loadBookGridBtn: `Textbook Example (4×3 Grid)`,
+        sendToDozerBtn: `Send Volume to Bulldozer`,
+        gridDxLabel: `Grid Width ΔX (m)`,
+        gridDyLabel: `Grid Length ΔY (m)`,
+        gridModeLabel: `Target Elevation Mode`,
+        modeMean: `Mean Leveling Elevation (Zero-Balance)`,
+        modeCustom: `Custom Specified Elevation`,
+        gridCustomRlLabel: `Target Level (m)`,
+        gridCellArea: `Unit Rectangle Area (S)`,
+        gridMeanRl: `Target Leveling Elevation`,
+        gridCutVol: `Total Cut Volume`,
+        gridFillVol: `Total Fill Volume`,
+        gridEconCheck: `Economic Feasibility Check`,
+        gridNodesHeader: `Grid Node Elevations (3 Rows × 4 Cols = 6 Rectangles)`,
+        laserSimHeader: `Laser Land Leveling Simulator (Scraper Control)`,
+        laserStartBtn: `Run Laser Scraper`,
+        laserIdleStatus: `Status: Ready — Laser transmitter projecting fixed reference plane.`,
+        dozerTitle: `Bulldozer Productivity Calculator`,
+        dozerSub: `Calculate hourly earthmoving output, required fleet hours, and estimated cost from blade capacity, push distance, and site factors.`,
+        dozerPresetLight: `Sandy Soil (D6)`,
+        dozerPresetHeavy: `Heavy Grading (D8R)`,
+        dozerBladeLabel: `Blade Capacity Q (m³)`,
+        dozerDistLabel: `Average Push Distance D (m)`,
+        dozerVfLabel: `Loaded Forward Speed Vf (km/h)`,
+        dozerVrLabel: `Empty Return Speed Vr (km/h)`,
+        dozerSoilLabel: `Soil & Blade Fill Factor (f)`,
+        soilSand: `Loose Sandy Soil (0.95)`,
+        soilLoam: `Medium Loam Soil (0.80)`,
+        soilClay: `Heavy Clay / Ripped Rock (0.65)`,
+        dozerEffLabel: `Job Time Efficiency (E)`,
+        eff50: `Excellent: 50 min/hr (0.83)`,
+        eff45: `Standard: 45 min/hr (0.75)`,
+        eff40: `Moderate: 40 min/hr (0.67)`,
+        dozerGradeLabel: `Haul Grade (%) (+ Downhill / - Uphill)`,
+        dozerVolLabel: `Total Earthwork Volume (m³)`,
+        dozerRateLabel: `Hourly Operating Rate (EGP/hr)`,
+        dozerProdKpi: `Actual Productivity (P)`,
+        dozerCycleKpi: `Cycle Time (Tc)`,
+        minutesUnit: `min / cycle`,
+        dozerHoursKpi: `Required Operating Hours`,
+        dozerCostKpi: `Estimated Total Cost`,
+        quizTitle: `Interactive Quiz & Certificate of Completion`,
+        quizSub: `Answer all 10 engineering questions to validate your surveying & land leveling mastery and unlock your official certificate.`,
+        resetQuizBtn: `Reset Quiz`,
+        traineeNameLabel: `Trainee / Engineer Name on Certificate`,
+        traineeAffilLabel: `Department / Academic Affiliation`,
+        certSectionTitle: `Certificate Preview`,
+        certLockedMsg: `Score at least 60% (6 / 10) to unlock official certificate download.`,
+        downloadCertBtn: `Download Certificate (PNG)`,
+        certUniHeader: `Al-Azhar University Cairo • Faculty of Agricultural Engineering • Water Systems & Irrigation Dept.`,
+        certMainTitle: `Certificate of Completion & Mastery`,
+        certGrantText: `The Department of Water Systems & Irrigation Engineering certifies that:`,
+        certBodyText: `has successfully completed the Interactive Surveying, Laser Land Leveling & Earthmoving Simulation Program`,
+        certScoreLabel: `Final Score:`,
+        certSupLabel: `Academic Supervision`,
+        certSupName: `Prof. Dr. Atef Moussa Ibrahim`,
+        certDevLabel: `Prepared & Developed by`,
+        certDevName: `Eng. Ibrahim Mohamed - Water Systems Engineer`,
+        copyrightText: `All Rights Reserved to Eng. Ibrahim Mohamed`,
+        sourcesCredit: `Scientific Sources: Land Reclamation, Surveying Leveling, Laser Grading & Bulldozer Engineering — Al-Azhar University.`
+      }
+    };
+
+    const QUIZ_BANK = [
+      {
+        id: 'q1',
+        q_ar: `ما هي العلامة المثبتة في الأرض أو الحائط والتي سبق إيجاد منسوبها بالنسبة لمتوسط سطح البحر وتُتخذ أساساً لبدء الميزانيات؟`,
+        q_en: `What is the fixed reference mark with a known elevation above Mean Sea Level used to start leveling surveys?`,
+        opts_ar: [`خط الكنتور (Contour Line)`, `الروبير (Bench Mark - BM)`, `شعيرة الاستاديا العليا`, `القطاع الطولي`],
+        opts_en: [`Contour Line`, `Bench Mark (BM)`, `Upper Stadia Hair`, `Longitudinal Profile`],
+        ans: 1,
+        exp_ar: `الروبير (Bench Mark) هو علامة مرجعية ثابتة معلوم منسوبها بالنسبة لسطح البحر لتفادي بدء الميزانية من البحر كل مرة.`,
+        exp_en: `A Bench Mark (BM) is a permanent point of known elevation relative to Mean Sea Level.`
+      },
+      {
+        id: 'q2',
+        q_ar: `إذا كان منسوب الروبير (BM = 10.50 م) والقراءة الخلفية عليه (BS = 1.45 م)، وقُرئت نقطة أمامية (FS = 2.15 م)، فما منسوب النقطة الجديدة؟`,
+        q_en: `Given BM = 10.50 m, Backsight BS = 1.45 m, and Foresight FS = 2.15 m, what is the Reduced Level (RL) of the new point?`,
+        opts_ar: [`9.80 م`, `11.95 م`, `11.20 م`, `8.35 م`],
+        opts_en: [`9.80 m`, `11.95 m`, `11.20 m`, `8.35 m`],
+        ans: 0,
+        exp_ar: `HI = 10.50 + 1.45 = 11.95 م، ثم RL = 11.95 - 2.15 = 9.80 م.`,
+        exp_en: `HI = 10.50 + 1.45 = 11.95 m, then RL = 11.95 - 2.15 = 9.80 m.`
+      },
+      {
+        id: 'q3',
+        q_ar: `في منظار الميزان، كانت قراءة شعيرة الاستاديا العليا 1.720 م والسفلى 1.320 م. ما هي المسافة الأفقية التقريبية بين الميزان والقامة؟`,
+        q_en: `In a leveling telescope, upper stadia = 1.720 m and lower stadia = 1.320 m. What is the approximate horizontal distance?`,
+        opts_ar: [`4.0 متر`, `40.0 متر`, `30.4 متر`, `132 متر`],
+        opts_en: [`4.0 m`, `40.0 m`, `30.4 m`, `132 m`],
+        ans: 1,
+        exp_ar: `المسافة D = 100 × (العليا - السفلى) = 100 × (1.720 - 1.320) = 40.0 متر.`,
+        exp_en: `Horizontal distance D = 100 × (Upper - Lower) = 100 × 0.400 = 40.0 m.`
+      },
+      {
+        id: 'q4',
+        q_ar: `ما هي المعادلة القياسية لحساب إجمالي مكعب الحفر أو الردم من الميزانية الشبكية ذات المستطيلات المتساوية المساحة (س)؟`,
+        q_en: `What is the standard grid leveling earthwork formula for equal rectangles of area S?`,
+        opts_ar: [
+          `V = S × (Σa + Σb + Σc + Σd)`,
+          `V = (S / 4) × (Σa + 2Σb + 3Σc + 4Σd)`,
+          `V = (S / 2) × (Σa + 2Σb)`,
+          `V = 4S × (Σa + Σd)`
+        ],
+        opts_en: [
+          `V = S × (Σa + Σb + Σc + Σd)`,
+          `V = (S / 4) × (Σa + 2Σb + 3Σc + 4Σd)`,
+          `V = (S / 2) × (Σa + 2Σb)`,
+          `V = 4S × (Σa + Σd)`
+        ],
+        ans: 1,
+        exp_ar: `تُضرب ارتفاعات كل ركن في عدد المستطيلات المشترك فيها (1 لـ a، 2 لـ b، 3 لـ c، 4 لـ d) ثم تُضرب في (س / 4).`,
+        exp_en: `Corner differences are weighted by the number of rectangles sharing them (1, 2, 3, or 4) and multiplied by S/4.`
+      },
+      {
+        id: 'q5',
+        q_ar: `في مثال الشبكة (3×2 مستطيلات) إذا كانت مناسيب الأركان هي مناسيب طبيعية، فكيف يُحسب منسوب التسوية المتوسط (حفر = ردم)؟`,
+        q_en: `How is the zero-balance mean leveling elevation determined for a regular grid?`,
+        opts_ar: [
+          `أعلى منسوب + أوطى منسوب`,
+          `متوسط المناسيب الموزون بحسب تكرار الأركان (Σa+2Σb+3Σc+4Σd) / 4N`,
+          `نصف منسوب الروبير`,
+          `فرق الحفر عن الردم مضروباً في 4`
+        ],
+        opts_en: [
+          `Max RL + Min RL`,
+          `Weighted average by corner sharing: (Σa+2Σb+3Σc+4Σd) / 4N`,
+          `Half of the Bench Mark`,
+          `Cut minus Fill multiplied by 4`
+        ],
+        ans: 1,
+        exp_ar: `المتوسط الموزون يضمن تساوي حجم التربة المحفورة مع حجم التربة المردومة تماماً داخل الحوشة.`,
+        exp_en: `The weighted elevation average ensures total cut volume equals total fill volume within the field.`
+      },
+      {
+        id: 'q6',
+        q_ar: `ما هي المعادلة الصحيحة للتحقيق الحسابي في دفتر الميزانية الطولية؟`,
+        q_en: `Which equation represents the valid arithmetic check in a leveling field book?`,
+        opts_ar: [
+          `ΣBS + ΣFS = Last RL + First RL`,
+          `ΣBS - ΣFS = Last RL - First RL`,
+          `ΣIS - ΣBS = Last HI - First HI`,
+          `BS × FS = RL`
+        ],
+        opts_en: [
+          `ΣBS + ΣFS = Last RL + First RL`,
+          `ΣBS - ΣFS = Last RL - First RL`,
+          `ΣIS - ΣBS = Last HI - First HI`,
+          `BS × FS = RL`
+        ],
+        ans: 1,
+        exp_ar: `مجموع القراءات الخلفية ناقص مجموع القراءات الأمامية يجب أن يساوي منسوب آخر نقطة ناقص منسوب أول نقطة.`,
+        exp_en: `Sum of Backsights minus Sum of Foresights must equal Last RL minus First RL.`
+      },
+      {
+        id: 'q7',
+        q_ar: `متى يُعد تحريك التربة في تسوية الأراضي مكلفاً اقتصادياً حسب مراجع استصلاح الأراضي؟`,
+        q_en: `Above what earthmoving volume per feddan is gravity land leveling generally considered economically expensive?`,
+        opts_ar: [`100 – 200 م³/فدان`, `1000 – 1300 م³/فدان`, `50 م³/فدان`, `250 م³/فدان`],
+        opts_en: [`100 – 200 m³/feddan`, `1000 – 1300 m³/feddan`, `50 m³/feddan`, `250 m³/feddan`],
+        ans: 1,
+        exp_ar: `تُعد الأراضي التي تتطلب تحريك تربة يزيد عن 1000–1300 م³/فدان (2000–3000 م³/هكتار) مكلفة اقتصادياً ويفضل لها الري بالضغط.`,
+        exp_en: `Volumes exceeding 1000–1300 m³/feddan (2000–3000 m³/ha) are economically costly, favoring pressurized irrigation.`
+      },
+      {
+        id: 'q8',
+        q_ar: `ما ميزة استخدام طرق الري بالضغط (الرش والتنقيط) مقارنة بالري بالغمر في الأراضي الرملية المستصلحة؟`,
+        q_en: `What is the main advantage of pressurized irrigation (sprinkler/drip) in reclaimed sandy soils?`,
+        opts_ar: [
+          `زيادة التسرب العميق وغرق الجذور`,
+          `توفير 40–50% من المياه وتقليل تكلفة تسوية السطح والتسامح في المناسيب`,
+          `ضرورة تسوية الأرض بشدة حتى 0.01%`,
+          `زيادة التبخر من سطح التربة`
+        ],
+        opts_en: [
+          `Increases deep percolation`,
+          `Saves 40–50% water, reduces grading cost, and tolerates slope variations`,
+          `Requires dead-level 0.01% earthwork`,
+          `Increases surface evaporation`
+        ],
+        ans: 1,
+        exp_ar: `يوفر الرش ~40% والتنقيط ~50% من المياه ويمنع الجريان السطحي والتسرب العميق، كما يسمح بتسامح 10% في الضاغط مما يخفض تكلفة التسوية.`,
+        exp_en: `Sprinkler (~40%) and drip (~50%) save water, cut deep percolation, and tolerate ±10% pressure head changes.`
+      },
+      {
+        id: 'q9',
+        q_ar: `في حساب إنتاجية البلدوزر، إذا زادت مسافة الدفع (D) للضعف مع ثبات السرعات، فماذا يحدث لإنتاجية البلدوزر في الساعة؟`,
+        q_en: `In bulldozer productivity calculations, if push distance D doubles while speeds stay constant, what happens to hourly output?`,
+        opts_ar: [`تتضاعف الإنتاجية`, `تنخفض الإنتاجية بوضوح لزيادة زمن الدورة Tc`, `تبقى ثابتة تماماً`, `تصبح صفراً`],
+        opts_en: [`Output doubles`, `Output drops sharply because cycle time Tc increases`, `Remains unchanged`, `Becomes zero`],
+        ans: 1,
+        exp_ar: `زيادة مسافة الدفع تزيد زمن الذهاب والعودة في المقام (Tc)، مما يقلل عدد الدورات في الساعة فتقل الإنتاجية.`,
+        exp_en: `Longer haul distance increases travel time in Tc, reducing cycles per hour and lowering m³/hr output.`
+      },
+      {
+        id: 'q10',
+        q_ar: `لماذا تقسّم الأرض عند التسوية إلى وحدات مستقلة تسمى كل منها "حوشة"؟`,
+        q_en: `Why is a large reclamation field subdivided into independent leveling units ("Hawsha")?`,
+        opts_ar: [
+          `لزيادة مسافة نقل الأتربة`,
+          `لتقليل مكعبات الأتربة المنقولة لمسافات بعيدة وخفض التكلفة`,
+          `لمنع استخدام الليزر`,
+          `لزيادة تملح التربة`
+        ],
+        opts_en: [
+          `To maximize haul distance`,
+          `To minimize earthwork volume and long-distance haul cost`,
+          `To prevent laser use`,
+          `To increase soil salinity`
+        ],
+        ans: 1,
+        exp_ar: `تقسيم الأرض إلى حوشات ذات مناسيب مستقلة يقلل مكعبات الأتربة ومسافات النقل، مما يوفر الوقود وزمن المعدات ويحافظ على القشرة السطحية.`,
+        exp_en: `Independent sub-units reduce cut/fill volumes and haul distances, protecting topsoil and cutting earthmoving costs.`
+      }
+    ];
+
+    /* ================================================================
+       HELPER FUNCTIONS
+       ================================================================ */
+    function getToken(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function persistState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === 'function') {
+        window.notebookAppApi.setAppState({
+          lang: APP_STATE.lang,
+          loggedIn: APP_STATE.loggedIn,
+          username: APP_STATE.username,
+          activePage: APP_STATE.activePage,
+          profileRows: APP_STATE.profileRows,
+          gridNodes: APP_STATE.gridNodes,
+          quizAnswers: APP_STATE.quizAnswers
+        });
+      }
+    }
+
+    function applyTranslations() {
+      const dict = I18N[APP_STATE.lang] || I18N.ar;
+      document.documentElement.lang = APP_STATE.lang;
+      document.documentElement.dir = APP_STATE.lang === 'ar' ? 'rtl' : 'ltr';
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+      });
+      const langLabel = document.getElementById('lang-btn-label');
+      if (langLabel) langLabel.textContent = APP_STATE.lang === 'ar' ? 'EN / العربية' : 'العربية / EN';
+
+      renderProfileTable();
+      recalcProfile();
+      renderGridNodes();
+      recalcGrid();
+      recalcBulldozer();
+      renderQuiz();
+      updateCertificatePreview();
+      updateTelescopeView();
+    }
+
+    function toggleLanguage() {
+      APP_STATE.lang = APP_STATE.lang === 'ar' ? 'en' : 'ar';
+      applyTranslations();
+      persistState();
+    }
+
+    /* ================================================================
+       AUTHENTICATION & NAVIGATION
+       ================================================================ */
+    function fillDemoCredentials() {
+      const u = document.getElementById('login-username');
+      const p = document.getElementById('login-password');
+      if (u) u.value = 'eng_ibrahim';
+      if (p) p.value = 'water2026';
+      const fb = document.getElementById('login-feedback');
+      if (fb) {
+        fb.className = 'inline-feedback success visible';
+        fb.textContent = APP_STATE.lang === 'ar'
+          ? 'تمت تعبئة بيانات المهندس إبراهيم — اضغط "فتح المنصة الهندسية".'
+          : 'Demo credentials filled — click "Unlock Platform".';
+      }
+    }
+
+    function handleLogin(event) {
+      if (event) event.preventDefault();
+      const userEl = document.getElementById('login-username');
+      const passEl = document.getElementById('login-password');
+      const fb = document.getElementById('login-feedback');
+      if (!userEl || !passEl || !fb) return;
+
+      const u = userEl.value.trim();
+      const p = passEl.value.trim();
+
+      if (VALID_CREDENTIALS[u] && VALID_CREDENTIALS[u] === p) {
+        APP_STATE.loggedIn = true;
+        APP_STATE.username = u;
+        fb.className = 'inline-feedback';
+        unlockPlatformUI();
+        persistState();
+      } else {
+        fb.className = 'inline-feedback error visible';
+        fb.textContent = APP_STATE.lang === 'ar'
+          ? 'بيانات الدخول غير صحيحة. استخدم eng_ibrahim وكلمة المرور water2026 أو اضغط "تعبئة سريعة".'
+          : 'Invalid credentials. Use eng_ibrahim / water2026 or click Demo Auto-Fill.';
+      }
+    }
+
+    function unlockPlatformUI() {
+      const gate = document.getElementById('login-gate');
+      const ws = document.getElementById('platform-workspace');
+      const nav = document.getElementById('main-nav');
+      const chip = document.getElementById('header-user-chip');
+      const logoutBtn = document.getElementById('logout-btn');
+      const nameSpan = document.getElementById('header-username');
+
+      if (gate) gate.classList.add('hidden');
+      if (ws) ws.classList.remove('hidden');
+      if (nav) nav.classList.remove('hidden');
+      if (chip) chip.classList.remove('hidden');
+      if (logoutBtn) logoutBtn.classList.remove('hidden');
+      if (nameSpan) nameSpan.textContent = APP_STATE.username;
+
+      navigateTo(APP_STATE.activePage || 'welcome');
+    }
+
+    function handleLogout(btn) {
+      if (btn && btn.dataset.armed !== 'true') {
+        btn.dataset.armed = 'true';
+        const span = btn.querySelector('span');
+        if (span) span.textContent = APP_STATE.lang === 'ar' ? 'تأكيد الخروج؟' : 'Confirm Logout?';
+        setTimeout(() => {
+          if (btn) {
+            btn.dataset.armed = 'false';
+            const s = btn.querySelector('span');
+            if (s) s.textContent = I18N[APP_STATE.lang].logoutBtn;
+          }
+        }, 3000);
+        return;
+      }
+      if (btn) btn.dataset.armed = 'false';
+      APP_STATE.loggedIn = false;
+      stopLaserSimulation();
+      const gate = document.getElementById('login-gate');
+      const ws = document.getElementById('platform-workspace');
+      const nav = document.getElementById('main-nav');
+      const chip = document.getElementById('header-user-chip');
+      const logoutBtn = document.getElementById('logout-btn');
+      if (gate) gate.classList.remove('hidden');
+      if (ws) ws.classList.add('hidden');
+      if (nav) nav.classList.add('hidden');
+      if (chip) chip.classList.add('hidden');
+      if (logoutBtn) logoutBtn.classList.add('hidden');
+      persistState();
+    }
+
+    function navigateTo(pageId) {
+      APP_STATE.activePage = pageId;
+      document.querySelectorAll('.view-section').forEach(sec => {
+        sec.classList.toggle('active', sec.id === 'view-' + pageId);
+      });
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.getAttribute('data-page') === pageId);
+      });
+      if (pageId === 'telescope') updateTelescopeView();
+      if (pageId === 'profile') recalcProfile();
+      if (pageId === 'grid') { recalcGrid(); drawLaserCanvas(); }
+      if (pageId === 'bulldozer') recalcBulldozer();
+      persistState();
+    }
+
+    /* ================================================================
+       MODULE 1: LEVEL & STAFF TELESCOPE SIMULATOR
+       ================================================================ */
+    function syncTeleReadingFromSlider(val) {
+      const b = document.getElementById('tele-reading-badge');
+      if (b) b.textContent = Number(val).toFixed(3) + ' m';
+      updateTelescopeView();
+    }
+
+    function syncTeleDistFromSlider(val) {
+      const b = document.getElementById('tele-dist-badge');
+      if (b) b.textContent = Number(val).toFixed(1) + ' m';
+      updateTelescopeView();
+    }
+
+    function newTelescopeChallenge() {
+      const randRead = (Math.floor(Math.random() * 520) + 120) * 0.005;
+      const randDist = Math.floor(Math.random() * 50) + 20;
+      const rSlider = document.getElementById('tele-staff-slider');
+      const dSlider = document.getElementById('tele-dist-slider');
+      const guess = document.getElementById('tele-user-guess');
+      const fb = document.getElementById('tele-guess-feedback');
+      if (rSlider) rSlider.value = randRead.toFixed(3);
+      if (dSlider) dSlider.value = randDist;
+      if (guess) guess.value = '';
+      if (fb) fb.className = 'inline-feedback';
+      syncTeleReadingFromSlider(randRead);
+      syncTeleDistFromSlider(randDist);
+    }
+
+    function verifyTelescopeGuess() {
+      const rSlider = document.getElementById('tele-staff-slider');
+      const guessEl = document.getElementById('tele-user-guess');
+      const fb = document.getElementById('tele-guess-feedback');
+      if (!rSlider || !guessEl || !fb) return;
+
+      const actual = parseFloat(rSlider.value);
+      const userVal = parseFloat(guessEl.value);
+      if (isNaN(userVal)) {
+        fb.className = 'inline-feedback error visible';
+        fb.textContent = APP_STATE.lang === 'ar' ? 'أدخل رقماً مثل 1.425 م للمقارنة.' : 'Enter a numeric reading such as 1.425 m.';
+        return;
+      }
+      const err = Math.abs(actual - userVal);
+      if (err <= 0.005) {
+        fb.className = 'inline-feedback success visible';
+        fb.textContent = APP_STATE.lang === 'ar'
+          ? `قراءة ممتازة! القيمة الحقيقية ${actual.toFixed(3)} م (خطأ ${(err*1000).toFixed(0)} مم).`
+          : `Accurate reading! True value is ${actual.toFixed(3)} m (error ${(err*1000).toFixed(0)} mm).`;
+      } else {
+        fb.className = 'inline-feedback error visible';
+        fb.textContent = APP_STATE.lang === 'ar'
+          ? `القراءة الصحيحة ${actual.toFixed(3)} م. راجع عدد سنتيمترات حرف E حول الشعيرة الوسطى.`
+          : `True reading is ${actual.toFixed(3)} m. Re-check the 1-cm E-teeth around the middle crosshair.`;
+      }
+    }
+
+    function updateTelescopeView() {
+      const rSlider = document.getElementById('tele-staff-slider');
+      const dSlider = document.getElementById('tele-dist-slider');
+      const fSlider = document.getElementById('tele-focus-slider');
+      const bmEl = document.getElementById('tele-bm-input');
+      const bsEl = document.getElementById('tele-bs-input');
+      const invEl = document.getElementById('tele-inverted-chk');
+      const canvas = document.getElementById('eyepiece-canvas');
+      if (!rSlider || !dSlider || !fSlider || !bmEl || !bsEl || !canvas) return;
+
+      const mid = parseFloat(rSlider.value);
+      const dist = parseFloat(dSlider.value);
+      const focus = parseFloat(fSlider.value);
+      const bm = parseFloat(bmEl.value) || 0;
+      const bs = parseFloat(bsEl.value) || 0;
+      const inverted = invEl ? invEl.checked : false;
+
+      const focusBadge = document.getElementById('tele-focus-badge');
+      if (focusBadge) focusBadge.textContent = focus + '%';
+
+      const hi = bm + bs;
+      const rl = hi - mid;
+      const halfIntercept = (dist / 100) / 2;
+      const upper = mid + halfIntercept;
+      const lower = mid - halfIntercept;
+
+      const hiVal = document.getElementById('tele-hi-val');
+      const rlVal = document.getElementById('tele-rl-val');
+      const stVal = document.getElementById('tele-stadia-val');
+      const stDist = document.getElementById('tele-stadia-dist');
+      if (hiVal) hiVal.textContent = hi.toFixed(3) + ' m';
+      if (rlVal) rlVal.textContent = rl.toFixed(3) + ' m';
+      if (stVal) stVal.textContent = upper.toFixed(3) + ' / ' + lower.toFixed(3);
+      if (stDist) stDist.textContent = 'D = 100×(' + upper.toFixed(3) + '-' + lower.toFixed(3) + ') = ' + dist.toFixed(1) + ' m';
+
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Sky/Field Gradient inside eyepiece
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, cx - 2, 0, Math.PI * 2);
+      ctx.clip();
+
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+      bgGrad.addColorStop(0, '#dbeafe');
+      bgGrad.addColorStop(0.65, '#f0fdf4');
+      bgGrad.addColorStop(1, '#e2e8f0');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Apply focus blur
+      const blurPx = ((100 - focus) / 100) * 5;
+      ctx.filter = `blur(${blurPx.toFixed(1)}px)`;
+
+      // Staff geometry: zoomed based on distance
+      const zoomScale = Math.max(0.55, Math.min(1.4, 55 / dist));
+      const pxPerMeter = 420 * zoomScale;
+      const staffW = 110 * zoomScale;
+      const staffX = cx - staffW / 2;
+
+      ctx.save();
+      if (inverted) {
+        ctx.translate(cx, cy);
+        ctx.rotate(Math.PI);
+        ctx.translate(-cx, -cy);
+      }
+
+      // Draw Staff White Board
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 2;
+      ctx.fillRect(staffX, 0, staffW, h);
+      ctx.strokeRect(staffX, 0, staffW, h);
+
+      // Draw E-pattern graduations from 0.00 m to 4.00 m
+      // Reading 'mid' aligns at y = cy; higher meters are UP (smaller y) in upright view
+      const cmPx = pxPerMeter / 100;
+      const dmPx = pxPerMeter / 10;
+
+      for (let dm = 0; dm < 40; dm++) {
+        const dmMeters = dm * 0.1;
+        const yBottom = cy - (dmMeters - mid) * pxPerMeter;
+        const yTop = yBottom - dmPx;
+
+        if (yBottom < -40 || yTop > h + 40) continue;
+
+        const isRed = Math.floor(dm / 10) % 2 === 1;
+        const blockColor = isRed ? '#b91c1c' : '#0f172a';
+
+        // Draw 5 alternating 1cm bands per 10cm E-block (5cm lower E + 5cm upper bars)
+        ctx.fillStyle = blockColor;
+        const barW = staffW * 0.45;
+        const spineW = staffW * 0.14;
+        const rightEdge = staffX + staffW;
+
+        // Vertical spine for lower 5cm of the dm block
+        ctx.fillRect(rightEdge - spineW, yBottom - 5 * cmPx, spineW, 5 * cmPx);
+        // 3 teeth at 0-1cm, 2-3cm, 4-5cm from bottom of dm block
+        ctx.fillRect(rightEdge - barW, yBottom - 1 * cmPx, barW, cmPx);
+        ctx.fillRect(rightEdge - barW, yBottom - 3 * cmPx, barW, cmPx);
+        ctx.fillRect(rightEdge - barW, yBottom - 5 * cmPx, barW, cmPx);
+
+        // Upper 5cm teeth (5-6cm, 7-8cm, 9-10cm)
+        ctx.fillRect(rightEdge - barW * 0.72, yBottom - 7 * cmPx, barW * 0.72, cmPx);
+        ctx.fillRect(rightEdge - barW * 0.72, yBottom - 9 * cmPx, barW * 0.72, cmPx);
+
+        // Decimeter numeral on left half of staff
+        ctx.fillStyle = blockColor;
+        ctx.font = `700 ${Math.max(13, Math.round(22 * zoomScale))}px "Geist Mono", monospace`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        const mInt = Math.floor(dm / 10);
+        const dmDigit = dm % 10;
+        const label = dmDigit === 0 ? `${mInt}.0` : `${mInt}.${dmDigit}`;
+        ctx.fillText(label, staffX + 6 * zoomScale, yBottom - dmPx * 0.5);
+
+        // Decimeter hairline
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.25)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(staffX, yBottom);
+        ctx.lineTo(staffX + staffW, yBottom);
+        ctx.stroke();
+      }
+      ctx.restore();
+      ctx.filter = 'none';
+
+      // Draw Reticle Crosshairs (always crisp!)
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 1.8;
+      // Vertical line
+      ctx.beginPath();
+      ctx.moveTo(cx, 16);
+      ctx.lineTo(cx, h - 16);
+      ctx.stroke();
+
+      // Middle Horizontal Crosshair
+      ctx.beginPath();
+      ctx.moveTo(16, cy);
+      ctx.lineTo(w - 16, cy);
+      ctx.stroke();
+
+      // Upper & Lower Stadia Hairs
+      const stadiaOffsetPx = halfIntercept * pxPerMeter;
+      ctx.strokeStyle = '#dc2626';
+      ctx.lineWidth = 1.4;
+      [cy - stadiaOffsetPx, cy + stadiaOffsetPx].forEach(sy => {
+        if (sy > 12 && sy < h - 12) {
+          ctx.beginPath();
+          ctx.moveTo(cx - 48, sy);
+          ctx.lineTo(cx + 48, sy);
+          ctx.stroke();
+        }
+      });
+
+      ctx.restore();
+    }
+
+    /* ================================================================
+       MODULE 2: LONGITUDINAL PROFILE CUT & FILL CALCULATOR
+       ================================================================ */
+    function resetProfilePreset() {
+      APP_STATE.profileRows = [
+        { st: 'A (BM)', dist: 0, bs: 1.85, is: '', fs: '', ground: 12.00 },
+        { st: 'P1', dist: 25, bs: '', is: 1.55, fs: '', ground: 12.30 },
+        { st: 'P2', dist: 50, bs: '', is: 1.25, fs: '', ground: 12.60 },
+        { st: 'TP1', dist: 75, bs: 2.10, is: '', fs: 1.40, ground: 12.45 },
+        { st: 'P4', dist: 100, bs: '', is: 2.35, fs: '', ground: 12.20 },
+        { st: 'P5', dist: 125, bs: '', is: 2.65, fs: '', ground: 11.90 },
+        { st: 'P6', dist: 150, bs: '', is: '', fs: 2.95, ground: 11.60 }
+      ];
+      const bm = document.getElementById('prof-bm');
+      const d0 = document.getElementById('prof-start-design');
+      const sl = document.getElementById('prof-slope');
+      const sp = document.getElementById('prof-spacing');
+      if (bm) bm.value = '12.00';
+      if (d0) d0.value = '12.18';
+      if (sl) sl.value = '-0.20';
+      if (sp) sp.value = '25';
+      renderProfileTable();
+      recalcProfile();
+      persistState();
+    }
+
+    function updateProfileCell(idx, field, val) {
+      if (!APP_STATE.profileRows[idx]) return;
+      APP_STATE.profileRows[idx][field] = val === '' ? '' : parseFloat(val);
+      recalcProfile();
+      persistState();
+    }
+
+    function renderProfileTable() {
+      const tbody = document.getElementById('profile-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = APP_STATE.profileRows.map((r, i) => `
+        <tr>
+          <td style="font-weight:700; color: var(--gold);">${r.st}</td>
+          <td id="p-dist-${i}">${r.dist}</td>
+          <td><input class="table-num" type="number" step="0.01" value="${r.bs}" oninput="updateProfileCell(${i}, 'bs', this.value)" aria-label="BS row ${i}"></td>
+          <td><input class="table-num" type="number" step="0.01" value="${r.is}" oninput="updateProfileCell(${i}, 'is', this.value)" aria-label="IS row ${i}"></td>
+          <td><input class="table-num" type="number" step="0.01" value="${r.fs}" oninput="updateProfileCell(${i}, 'fs', this.value)" aria-label="FS row ${i}"></td>
+          <td id="p-hi-${i}" style="font-family: var(--font-label);">—</td>
+          <td id="p-rl-${i}" style="font-family: var(--font-label); font-weight:700;">—</td>
+          <td id="p-des-${i}" style="font-family: var(--font-label); color: var(--data-1);">—</td>
+          <td id="p-diff-${i}" style="font-family: var(--font-label); font-weight:700;">—</td>
+        </tr>
+      `).join('');
+    }
+
+    function computeProfileData() {
+      const bm = parseFloat(document.getElementById('prof-bm')?.value) || 12.0;
+      const startDesign = parseFloat(document.getElementById('prof-start-design')?.value) || 12.0;
+      const slopePct = parseFloat(document.getElementById('prof-slope')?.value) || 0;
+      const width = Math.max(1, parseFloat(document.getElementById('prof-width')?.value) || 10);
+      const spacing = Math.max(5, parseFloat(document.getElementById('prof-spacing')?.value) || 25);
+
+      let currentHI = null;
+      let sumBS = 0;
+      let sumFS = 0;
+      const computed = [];
+
+      APP_STATE.profileRows.forEach((row, idx) => {
+        const dist = idx * spacing;
+        row.dist = dist;
+        const bs = row.bs !== '' && !isNaN(row.bs) ? Number(row.bs) : null;
+        const isVal = row.is !== '' && !isNaN(row.is) ? Number(row.is) : null;
+        const fs = row.fs !== '' && !isNaN(row.fs) ? Number(row.fs) : null;
+
+        let rl = null;
+        if (idx === 0) {
+          rl = bm;
+          if (bs !== null) {
+            currentHI = rl + bs;
+            sumBS += bs;
+          }
+        } else {
+          if (fs !== null && currentHI !== null) {
+            rl = currentHI - fs;
+            sumFS += fs;
+            if (bs !== null) {
+              currentHI = rl + bs;
+              sumBS += bs;
+            }
+          } else if (isVal !== null && currentHI !== null) {
+            rl = currentHI - isVal;
+          } else {
+            rl = bm;
+          }
+        }
+        const designRL = startDesign + (slopePct / 100) * dist;
+        const diff = rl - designRL; // + Cut, - Fill
+        computed.push({ st: row.st, dist, hi: currentHI, rl, designRL, diff });
+      });
+
+      let cutVol = 0;
+      let fillVol = 0;
+      for (let i = 0; i < computed.length - 1; i++) {
+        const d1 = computed[i].diff;
+        const d2 = computed[i + 1].diff;
+        const segL = computed[i + 1].dist - computed[i].dist;
+        if (d1 >= 0 && d2 >= 0) {
+          cutVol += width * segL * ((d1 + d2) / 2);
+        } else if (d1 <= 0 && d2 <= 0) {
+          fillVol += width * segL * ((Math.abs(d1) + Math.abs(d2)) / 2);
+        } else {
+          // Zero crossing split
+          const abs1 = Math.abs(d1);
+          const abs2 = Math.abs(d2);
+          const x0 = segL * (abs1 / (abs1 + abs2));
+          const x1 = segL - x0;
+          if (d1 > 0) {
+            cutVol += width * x0 * (d1 / 2);
+            fillVol += width * x1 * (abs2 / 2);
+          } else {
+            fillVol += width * x0 * (abs1 / 2);
+            cutVol += width * x1 * (d2 / 2);
+          }
+        }
+      }
+
+      const firstRL = computed[0]?.rl ?? 0;
+      const lastRL = computed[computed.length - 1]?.rl ?? 0;
+      const checkDiff = Math.abs((sumBS - sumFS) - (lastRL - firstRL));
+
+      return { computed, cutVol, fillVol, sumBS, sumFS, firstRL, lastRL, checkDiff };
+    }
+
+    function recalcProfile() {
+      const data = computeProfileData();
+      data.computed.forEach((c, i) => {
+        const dEl = document.getElementById(`p-dist-${i}`);
+        const hiEl = document.getElementById(`p-hi-${i}`);
+        const rlEl = document.getElementById(`p-rl-${i}`);
+        const desEl = document.getElementById(`p-des-${i}`);
+        const diffEl = document.getElementById(`p-diff-${i}`);
+        if (dEl) dEl.textContent = c.dist;
+        if (hiEl) hiEl.textContent = c.hi !== null ? c.hi.toFixed(2) : '—';
+        if (rlEl) rlEl.textContent = c.rl.toFixed(2);
+        if (desEl) desEl.textContent = c.designRL.toFixed(2);
+        if (diffEl) {
+          const sign = c.diff >= 0 ? '+' : '';
+          diffEl.textContent = sign + c.diff.toFixed(2);
+          diffEl.style.color = c.diff >= 0 ? getToken('--gold') : getToken('--tertiary');
+        }
+      });
+
+      const cutEl = document.getElementById('prof-cut-total');
+      const fillEl = document.getElementById('prof-fill-total');
+      const netEl = document.getElementById('prof-net-total');
+      const netNote = document.getElementById('prof-net-note');
+      const chkVal = document.getElementById('prof-check-val');
+      const chkSub = document.getElementById('prof-check-sub');
+
+      if (cutEl) cutEl.textContent = data.cutVol.toFixed(1);
+      if (fillEl) fillEl.textContent = data.fillVol.toFixed(1);
+      const net = data.cutVol - data.fillVol;
+      if (netEl) netEl.textContent = (net >= 0 ? '+' : '') + net.toFixed(1) + ' m³';
+      if (netNote) {
+        netNote.textContent = Math.abs(net) < 5
+          ? (APP_STATE.lang === 'ar' ? 'متوازن اقتصادياً' : 'Balanced')
+          : (net > 0
+            ? (APP_STATE.lang === 'ar' ? 'فائض حفر' : 'Excess Cut')
+            : (APP_STATE.lang === 'ar' ? 'يحتاج توريد ردم' : 'Needs Borrow Fill'));
+      }
+      if (chkVal) chkVal.textContent = data.checkDiff < 0.01 ? 'PASS (0.00)' : 'ERR ' + data.checkDiff.toFixed(2);
+      if (chkSub) chkSub.textContent = `ΣBS(${data.sumBS.toFixed(2)}) - ΣFS(${data.sumFS.toFixed(2)}) = ${(data.lastRL - data.firstRL).toFixed(2)}`;
+
+      drawProfileSvg(data.computed);
+    }
+
+    function balanceProfileDesign() {
+      const data = computeProfileData();
+      const slopePct = parseFloat(document.getElementById('prof-slope')?.value) || 0;
+      const n = data.computed.length;
+      if (n === 0) return;
+      // Mean ground minus mean slope offset
+      let sumGround = 0;
+      let sumSlopeTerm = 0;
+      data.computed.forEach(c => {
+        sumGround += c.rl;
+        sumSlopeTerm += (slopePct / 100) * c.dist;
+      });
+      const balancedStart = (sumGround - sumSlopeTerm) / n;
+      const startEl = document.getElementById('prof-start-design');
+      if (startEl) startEl.value = balancedStart.toFixed(2);
+      recalcProfile();
+    }
+
+    function drawProfileSvg(points) {
+      const svg = document.getElementById('profile-svg');
+      if (!svg || points.length < 2) return;
+
+      const W = 900, H = 320;
+      const padL = 56, padR = 30, padT = 26, padB = 42;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+
+      const maxDist = points[points.length - 1].dist || 1;
+      const allY = points.flatMap(p => [p.rl, p.designRL]);
+      const minY = Math.floor((Math.min(...allY) - 0.3) * 10) / 10;
+      const maxY = Math.ceil((Math.max(...allY) + 0.3) * 10) / 10;
+      const spanY = Math.max(0.5, maxY - minY);
+
+      const xOf = d => padL + (d / maxDist) * plotW;
+      const yOf = val => padT + plotH - ((val - minY) / spanY) * plotH;
+
+      const cGold = getToken('--gold');
+      const cEm = getToken('--tertiary');
+      const cBlue = getToken('--data-1');
+      const cMuted = getToken('--on-surface-variant');
+      const cGrid = 'rgba(148, 184, 232, 0.16)';
+
+      let markup = '';
+
+      // Horizontal Gridlines
+      for (let i = 0; i <= 4; i++) {
+        const val = minY + (spanY * i) / 4;
+        const y = yOf(val);
+        markup += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${cGrid}" stroke-width="1"/>`;
+        markup += `<text x="${padL - 8}" y="${y + 4}" fill="${cMuted}" font-size="11" font-family="Geist Mono, monospace" text-anchor="end">${val.toFixed(2)}</text>`;
+      }
+
+      // Cut & Fill Shaded Polygons per segment
+      for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i], p2 = points[i + 1];
+        const x1 = xOf(p1.dist), x2 = xOf(p2.dist);
+        const yg1 = yOf(p1.rl), yg2 = yOf(p2.rl);
+        const yd1 = yOf(p1.designRL), yd2 = yOf(p2.designRL);
+
+        if (p1.diff >= 0 && p2.diff >= 0) {
+          markup += `<polygon points="${x1},${yg1} ${x2},${yg2} ${x2},${yd2} ${x1},${yd1}" fill="rgba(245, 196, 81, 0.25)"/>`;
+        } else if (p1.diff <= 0 && p2.diff <= 0) {
+          markup += `<polygon points="${x1},${yg1} ${x2},${yg2} ${x2},${yd2} ${x1},${yd1}" fill="rgba(52, 211, 153, 0.25)"/>`;
+        } else {
+          const abs1 = Math.abs(p1.diff), abs2 = Math.abs(p2.diff);
+          const ratio = abs1 / (abs1 + abs2);
+          const x0 = x1 + (x2 - x1) * ratio;
+          const y0 = yd1 + (yd2 - yd1) * ratio;
+          const col1 = p1.diff > 0 ? 'rgba(245, 196, 81, 0.25)' : 'rgba(52, 211, 153, 0.25)';
+          const col2 = p2.diff > 0 ? 'rgba(245, 196, 81, 0.25)' : 'rgba(52, 211, 153, 0.25)';
+          markup += `<polygon points="${x1},${yg1} ${x0},${y0} ${x1},${yd1}" fill="${col1}"/>`;
+          markup += `<polygon points="${x0},${y0} ${x2},${yg2} ${x2},${yd2}" fill="${col2}"/>`;
+        }
+      }
+
+      const groundPath = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'}${xOf(p.dist).toFixed(1)},${yOf(p.rl).toFixed(1)}`).join(' ');
+      const designPath = points.map((p, idx) => `${idx === 0 ? 'M' : 'L'}${xOf(p.dist).toFixed(1)},${yOf(p.designRL).toFixed(1)}`).join(' ');
+
+      markup += `<path d="${groundPath}" fill="none" stroke="${cGold}" stroke-width="3"/>`;
+      markup += `<path d="${designPath}" fill="none" stroke="${cBlue}" stroke-width="2.5" stroke-dasharray="7 5"/>`;
+
+      points.forEach(p => {
+        const x = xOf(p.dist), y = yOf(p.rl);
+        markup += `<circle cx="${x}" cy="${y}" r="4.5" fill="${cGold}" stroke="#060f21" stroke-width="1.5"/>`;
+        markup += `<text x="${x}" y="${H - 14}" fill="${cMuted}" font-size="11" font-family="Geist Mono, monospace" text-anchor="middle">${p.dist}m</text>`;
+      });
+
+      // Legend
+      const legGround = APP_STATE.lang === 'ar' ? 'سطح الأرض الطبيعي' : 'Ground Profile';
+      const legDesign = APP_STATE.lang === 'ar' ? 'خط التصميم' : 'Design Grade';
+      markup += `<rect x="${padL + 10}" y="8" width="14" height="3" fill="${cGold}"/>`;
+      markup += `<text x="${padL + 30}" y="13" fill="${cGold}" font-size="12" font-weight="700">${legGround}</text>`;
+      markup += `<rect x="${padL + 170}" y="8" width="14" height="3" fill="${cBlue}"/>`;
+      markup += `<text x="${padL + 190}" y="13" fill="${cBlue}" font-size="12" font-weight="700">${legDesign}</text>`;
+
+      svg.innerHTML = markup;
+    }
+
+    /* ================================================================
+       MODULE 3: GRID LEVELING & LASER CONTROL SIMULATOR
+       ================================================================ */
+    function loadTextbookGridExample() {
+      // Grounded in الميزانية-1.pdf (3x4 nodes = 6 rectangles)
+      APP_STATE.gridNodes = [
+        4.6, 4.8, 4.3, 4.1,
+        4.2, 4.3, 4.0, 3.8,
+        3.5, 3.8, 3.6, 3.4
+      ];
+      const dx = document.getElementById('grid-dx');
+      const dy = document.getElementById('grid-dy');
+      const mode = document.getElementById('grid-target-mode');
+      if (dx) dx.value = '40';
+      if (dy) dy.value = '30';
+      if (mode) mode.value = 'mean';
+      renderGridNodes();
+      recalcGrid();
+      resetLaserSimulation();
+      persistState();
+    }
+
+    function updateGridNode(idx, val) {
+      const parsed = parseFloat(val);
+      if (!isNaN(parsed)) {
+        APP_STATE.gridNodes[idx] = parsed;
+        recalcGrid();
+        resetLaserSimulation();
+        persistState();
+      }
+    }
+
+    function renderGridNodes() {
+      const container = document.getElementById('grid-nodes-container');
+      if (!container) return;
+      container.innerHTML = APP_STATE.gridNodes.map((val, i) => {
+        const r = Math.floor(i / 4) + 1;
+        const c = (i % 4) + 1;
+        return `
+          <div class="grid-node-cell" id="grid-cell-${i}">
+            <span style="font-size: 0.72rem; font-family: var(--font-label); color: var(--on-surface-variant);">N(${r},${c})</span>
+            <input class="table-num" style="width: 100%;" type="number" step="0.1" value="${val.toFixed(1)}" oninput="updateGridNode(${i}, this.value)" aria-label="Grid node ${r}-${c}">
+            <span id="grid-delta-${i}" style="font-size: 0.74rem; font-family: var(--font-label); font-weight: 700;">0.00</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getCornerWeight(idx) {
+      // 3 rows (0..2), 4 cols (0..3) -> 6 rectangles
+      const r = Math.floor(idx / 4);
+      const c = idx % 4;
+      const rCount = (r === 1) ? 2 : 1;
+      const cCount = (c === 1 || c === 2) ? 2 : 1;
+      return rCount * cCount; // 1 (a), 2 (b), or 4 (d)
+    }
+
+    function recalcGrid() {
+      const dx = Math.max(5, parseFloat(document.getElementById('grid-dx')?.value) || 40);
+      const dy = Math.max(5, parseFloat(document.getElementById('grid-dy')?.value) || 30);
+      const mode = document.getElementById('grid-target-mode')?.value || 'mean';
+      const customEl = document.getElementById('grid-custom-rl');
+      if (customEl) customEl.disabled = (mode === 'mean');
+
+      const S = dx * dy;
+      const numRects = 6;
+      const totalArea = S * numRects;
+      const feddans = totalArea / 4200;
+
+      // Weighted mean elevation (zero cut-fill balance)
+      let weightedSum = 0;
+      APP_STATE.gridNodes.forEach((z, idx) => {
+        weightedSum += z * getCornerWeight(idx);
+      });
+      const meanRL = weightedSum / (4 * numRects);
+      const targetRL = mode === 'mean' ? meanRL : (parseFloat(customEl?.value) || meanRL);
+      if (mode === 'mean' && customEl) customEl.value = meanRL.toFixed(2);
+
+      let sumA = 0, sumB = 0, sumD = 0;
+      let cutSum = 0, fillSum = 0;
+
+      APP_STATE.gridNodes.forEach((z, idx) => {
+        const w = getCornerWeight(idx);
+        const diff = z - targetRL; // + Cut, - Fill
+        if (diff >= 0) cutSum += diff * w;
+        else fillSum += Math.abs(diff) * w;
+
+        if (w === 1) sumA += diff;
+        else if (w === 2) sumB += diff;
+        else if (w === 4) sumD += diff;
+
+        const cell = document.getElementById(`grid-cell-${idx}`);
+        const dSpan = document.getElementById(`grid-delta-${idx}`);
+        if (cell) {
+          cell.classList.remove('cut-node', 'fill-node');
+          if (diff > 0.01) cell.classList.add('cut-node');
+          else if (diff < -0.01) cell.classList.add('fill-node');
+        }
+        if (dSpan) {
+          dSpan.textContent = (diff >= 0 ? '+' : '') + diff.toFixed(2) + ' m';
+          dSpan.style.color = diff >= 0 ? getToken('--gold') : getToken('--tertiary');
+        }
+      });
+
+      const cutVol = (S / 4) * cutSum;
+      const fillVol = (S / 4) * fillSum;
+      const volPerFeddan = cutVol / feddans;
+
+      const areaEl = document.getElementById('grid-area-val');
+      const totAreaEl = document.getElementById('grid-total-area');
+      const targetEl = document.getElementById('grid-target-val');
+      const cutEl = document.getElementById('grid-cut-val');
+      const fillEl = document.getElementById('grid-fill-val');
+      const fedEl = document.getElementById('grid-cut-per-feddan');
+      const breakdownEl = document.getElementById('grid-formula-breakdown');
+
+      if (areaEl) areaEl.textContent = `${S.toFixed(0)} m²`;
+      if (totAreaEl) totAreaEl.textContent = `${totalArea.toFixed(0)} m² (${feddans.toFixed(2)} Feddan)`;
+      if (targetEl) targetEl.textContent = `${targetRL.toFixed(2)} m`;
+      if (cutEl) cutEl.textContent = `${cutVol.toFixed(0)} m³`;
+      if (fillEl) fillEl.textContent = `${fillVol.toFixed(0)} m³`;
+      if (fedEl) {
+        const econ = volPerFeddan > 1300
+          ? (APP_STATE.lang === 'ar' ? 'مكلفة (تتجاوز 1300 م³/فدان)' : 'High Cost (>1300 m³/fed)')
+          : (APP_STATE.lang === 'ar' ? 'اقتصادية للتسوية' : 'Economical');
+        fedEl.textContent = `${volPerFeddan.toFixed(0)} m³/Feddan • ${econ}`;
+      }
+      if (breakdownEl) {
+        breakdownEl.innerHTML = `<bdi dir="ltr">V_net = (${S}/4) × [Σa(${sumA.toFixed(2)}) + 2Σb(${sumB.toFixed(2)}) + 4Σd(${sumD.toFixed(2)})] | Cut=${cutVol.toFixed(0)} m³, Fill=${fillVol.toFixed(0)} m³</bdi>`;
+      }
+
+      APP_STATE.lastGridCutVol = Math.round(cutVol);
+      initLaserTerrain(targetRL);
+    }
+
+    function sendGridVolToBulldozer() {
+      const vol = APP_STATE.lastGridCutVol || 1500;
+      const dozerVolEl = document.getElementById('dozer-total-vol');
+      if (dozerVolEl) dozerVolEl.value = Math.max(100, vol);
+      recalcBulldozer();
+      navigateTo('bulldozer');
+    }
+
+    /* Laser Scraper Simulation */
+    function initLaserTerrain(targetRL) {
+      // Sample cross-section from the middle row + interpolation
+      const rowAvg = [
+        (APP_STATE.gridNodes[0] + APP_STATE.gridNodes[4] + APP_STATE.gridNodes[8]) / 3,
+        (APP_STATE.gridNodes[1] + APP_STATE.gridNodes[5] + APP_STATE.gridNodes[9]) / 3,
+        (APP_STATE.gridNodes[2] + APP_STATE.gridNodes[6] + APP_STATE.gridNodes[10]) / 3,
+        (APP_STATE.gridNodes[3] + APP_STATE.gridNodes[7] + APP_STATE.gridNodes[11]) / 3
+      ];
+      const pts = [];
+      const N = 48;
+      for (let i = 0; i <= N; i++) {
+        const t = (i / N) * 3;
+        const idx = Math.min(2, Math.floor(t));
+        const frac = t - idx;
+        const val = rowAvg[idx] * (1 - frac) + rowAvg[idx + 1] * frac;
+        pts.push(val);
+      }
+      APP_STATE.laserInitial = pts.slice();
+      APP_STATE.laserTerrain = pts.slice();
+      APP_STATE.laserTargetRL = targetRL;
+      APP_STATE.laserProgress = 0;
+      drawLaserCanvas();
+    }
+
+    function stopLaserSimulation() {
+      APP_STATE.laserRunning = false;
+      if (APP_STATE.laserAnimId) cancelAnimationFrame(APP_STATE.laserAnimId);
+      const btnText = document.getElementById('laser-btn-text');
+      if (btnText) btnText.textContent = I18N[APP_STATE.lang].laserStartBtn;
+    }
+
+    function resetLaserSimulation() {
+      stopLaserSimulation();
+      APP_STATE.laserTerrain = APP_STATE.laserInitial.slice();
+      APP_STATE.laserProgress = 0;
+      const pct = document.getElementById('laser-progress-pct');
+      const st = document.getElementById('laser-status-text');
+      if (pct) pct.textContent = '0%';
+      if (st) st.textContent = I18N[APP_STATE.lang].laserIdleStatus;
+      drawLaserCanvas();
+    }
+
+    function toggleLaserSimulation() {
+      if (APP_STATE.laserRunning) {
+        stopLaserSimulation();
+        return;
+      }
+      if (APP_STATE.laserProgress >= 1) resetLaserSimulation();
+      APP_STATE.laserRunning = true;
+      const btnText = document.getElementById('laser-btn-text');
+      if (btnText) btnText.textContent = APP_STATE.lang === 'ar' ? 'إيقاف مؤقت' : 'Pause';
+
+      function stepLaser() {
+        if (!APP_STATE.laserRunning) return;
+        APP_STATE.laserProgress = Math.min(1, APP_STATE.laserProgress + 0.008);
+        const p = APP_STATE.laserProgress;
+        const target = APP_STATE.laserTargetRL || 4.0;
+        const len = APP_STATE.laserInitial.length;
+        const scraperIdx = Math.floor(p * (len - 1));
+
+        for (let i = 0; i <= scraperIdx; i++) {
+          APP_STATE.laserTerrain[i] = target;
+        }
+
+        const pct = document.getElementById('laser-progress-pct');
+        const st = document.getElementById('laser-status-text');
+        if (pct) pct.textContent = Math.round(p * 100) + '%';
+        if (st) {
+          st.textContent = p >= 1
+            ? (APP_STATE.lang === 'ar' ? 'اكتملت التسوية بالليزر بدقة ±2 سم!' : 'Laser leveling complete within ±2 cm!')
+            : (APP_STATE.lang === 'ar' ? 'المستقبل الليزري يوجه القصبية هيدروليكياً (حفر/ردم تلقائي)...' : 'Laser receiver guiding scraper hydraulics...');
+        }
+
+        drawLaserCanvas();
+        if (p < 1) {
+          APP_STATE.laserAnimId = requestAnimationFrame(stepLaser);
+        } else {
+          stopLaserSimulation();
+        }
+      }
+      APP_STATE.laserAnimId = requestAnimationFrame(stepLaser);
+    }
+
+    function drawLaserCanvas() {
+      const canvas = document.getElementById('laser-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const terrain = APP_STATE.laserTerrain;
+      const initT = APP_STATE.laserInitial;
+      if (!terrain.length) return;
+
+      const target = APP_STATE.laserTargetRL || 4.0;
+      const minY = Math.min(...initT, target) - 0.6;
+      const maxY = Math.max(...initT, target) + 0.9;
+      const span = Math.max(1.2, maxY - minY);
+
+      const xOf = idx => 40 + (idx / (terrain.length - 1)) * (W - 70);
+      const yOf = v => H - 36 - ((v - minY) / span) * (H - 80);
+
+      // Laser Transmitter Tripod at x = 22
+      const yTarget = yOf(target);
+      const yLaserBeam = yTarget - 58;
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(18, H - 36);
+      ctx.lineTo(26, yLaserBeam);
+      ctx.lineTo(34, H - 36);
+      ctx.stroke();
+
+      // Rotating Laser Head
+      ctx.fillStyle = '#f5c451';
+      ctx.fillRect(20, yLaserBeam - 8, 12, 10);
+
+      // Red Laser Reference Plane
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 1.6;
+      ctx.setLineDash([8, 4]);
+      ctx.beginPath();
+      ctx.moveTo(32, yLaserBeam - 3);
+      ctx.lineTo(W - 20, yLaserBeam - 3);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Target Design Grade Line
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(40, yTarget);
+      ctx.lineTo(W - 30, yTarget);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Original Undisturbed Profile Ghost
+      ctx.strokeStyle = 'rgba(245, 196, 81, 0.45)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      initT.forEach((v, i) => {
+        if (i === 0) ctx.moveTo(xOf(i), yOf(v));
+        else ctx.lineTo(xOf(i), yOf(v));
+      });
+      ctx.stroke();
+
+      // Current Graded Soil Fill
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.25)';
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      terrain.forEach((v, i) => {
+        if (i === 0) ctx.moveTo(xOf(i), yOf(v));
+        else ctx.lineTo(xOf(i), yOf(v));
+      });
+      ctx.lineTo(xOf(terrain.length - 1), H - 36);
+      ctx.lineTo(xOf(0), H - 36);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      terrain.forEach((v, i) => {
+        if (i === 0) ctx.moveTo(xOf(i), yOf(v));
+        else ctx.lineTo(xOf(i), yOf(v));
+      });
+      ctx.stroke();
+
+      // Tractor & Laser Scraper Icon at current progress
+      const sIdx = Math.min(terrain.length - 1, Math.floor(APP_STATE.laserProgress * (terrain.length - 1)));
+      const sx = xOf(sIdx);
+      const sy = yOf(terrain[sIdx]);
+
+      // Scraper Blade
+      ctx.fillStyle = '#f5c451';
+      ctx.fillRect(sx - 12, sy - 14, 24, 14);
+      // Mast up to laser beam
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy - 14);
+      ctx.lineTo(sx, yLaserBeam - 3);
+      ctx.stroke();
+      // Receiver Sensor
+      ctx.fillStyle = '#34d399';
+      ctx.fillRect(sx - 5, yLaserBeam - 8, 10, 10);
+    }
+
+    /* ================================================================
+       MODULE 4: BULLDOZER PRODUCTIVITY CALCULATOR
+       ================================================================ */
+    function setDozerPreset(type) {
+      const blade = document.getElementById('dozer-blade');
+      const dist = document.getElementById('dozer-dist');
+      const vf = document.getElementById('dozer-vf');
+      const vr = document.getElementById('dozer-vr');
+      const soil = document.getElementById('dozer-soil');
+      const rate = document.getElementById('dozer-rate');
+      if (type === 'light') {
+        if (blade) blade.value = '3.8';
+        if (dist) dist.value = '35';
+        if (vf) vf.value = '3.5';
+        if (vr) vr.value = '7.0';
+        if (soil) soil.value = '0.95';
+        if (rate) rate.value = '1600';
+      } else {
+        if (blade) blade.value = '7.2';
+        if (dist) dist.value = '55';
+        if (vf) vf.value = '3.0';
+        if (vr) vr.value = '6.0';
+        if (soil) soil.value = '0.65';
+        if (rate) rate.value = '2600';
+      }
+      recalcBulldozer();
+    }
+
+    function calcDozerHourly(Q, D, vfKmh, vrKmh, soilF, effE, gradePct) {
+      const vfMpm = (vfKmh * 1000) / 60;
+      const vrMpm = (vrKmh * 1000) / 60;
+      const tGear = 0.15; // min
+      const Tc = (D / vfMpm) + (D / vrMpm) + tGear;
+      // Grade factor: +1% downhill ~ +2.5% output; -1% uphill ~ -2% output
+      const gradeFactor = Math.max(0.6, Math.min(1.3, 1 + gradePct * 0.022));
+      const P = Q * (60 / Tc) * effE * soilF * gradeFactor;
+      return { P, Tc, gradeFactor };
+    }
+
+    function recalcBulldozer() {
+      const Q = Math.max(0.5, parseFloat(document.getElementById('dozer-blade')?.value) || 4.2);
+      const D = Math.max(5, parseFloat(document.getElementById('dozer-dist')?.value) || 40);
+      const vf = Math.max(0.5, parseFloat(document.getElementById('dozer-vf')?.value) || 3.2);
+      const vr = Math.max(1, parseFloat(document.getElementById('dozer-vr')?.value) || 6.5);
+      const soil = parseFloat(document.getElementById('dozer-soil')?.value) || 0.8;
+      const eff = parseFloat(document.getElementById('dozer-eff')?.value) || 0.83;
+      const grade = parseFloat(document.getElementById('dozer-grade-slider')?.value) || 0;
+      const totalVol = Math.max(10, parseFloat(document.getElementById('dozer-total-vol')?.value) || 3200);
+      const rate = Math.max(100, parseFloat(document.getElementById('dozer-rate')?.value) || 1800);
+
+      const gBadge = document.getElementById('dozer-grade-badge');
+      if (gBadge) gBadge.textContent = (grade > 0 ? '+' : '') + grade + '%';
+
+      const { P, Tc } = calcDozerHourly(Q, D, vf, vr, soil, eff, grade);
+      const hours = totalVol / P;
+      const days = hours / 8;
+      const cost = hours * rate;
+      const unitCost = cost / totalVol;
+
+      const pEl = document.getElementById('dozer-prod-val');
+      const tcEl = document.getElementById('dozer-cycle-val');
+      const hEl = document.getElementById('dozer-hours-val');
+      const dEl = document.getElementById('dozer-days-sub');
+      const cEl = document.getElementById('dozer-cost-val');
+      const uEl = document.getElementById('dozer-unit-cost');
+
+      if (pEl) pEl.textContent = P.toFixed(1);
+      if (tcEl) tcEl.textContent = Tc.toFixed(2);
+      if (hEl) hEl.textContent = hours.toFixed(1) + ' hr';
+      if (dEl) dEl.textContent = `${days.toFixed(1)} ${APP_STATE.lang === 'ar' ? 'يوم عمل (8 س)' : 'workdays (8h)'}`;
+      if (cEl) cEl.textContent = Math.round(cost).toLocaleString();
+      if (uEl) uEl.textContent = `${unitCost.toFixed(1)} ${APP_STATE.lang === 'ar' ? 'جنيه/م³' : 'EGP/m³'}`;
+
+      drawDozerCurveSvg(Q, D, vf, vr, soil, eff, grade, P);
+    }
+
+    function drawDozerCurveSvg(Q, currentD, vf, vr, soil, eff, grade, currentP) {
+      const svg = document.getElementById('dozer-curve-svg');
+      if (!svg) return;
+      const W = 640, H = 280;
+      const padL = 54, padR = 24, padT = 28, padB = 42;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+
+      const distances = [15, 25, 40, 55, 70, 90, 110, 130];
+      const pts = distances.map(d => ({
+        d,
+        p: calcDozerHourly(Q, d, vf, vr, soil, eff, grade).P
+      }));
+      const maxP = Math.max(...pts.map(pt => pt.p), currentP) * 1.15;
+
+      const xOf = d => padL + ((d - 15) / (130 - 15)) * plotW;
+      const yOf = p => padT + plotH - (p / maxP) * plotH;
+
+      const cEm = getToken('--tertiary');
+      const cGold = getToken('--gold');
+      const cMuted = getToken('--on-surface-variant');
+      const cGrid = 'rgba(148, 184, 232, 0.16)';
+
+      let markup = '';
+      for (let i = 0; i <= 4; i++) {
+        const val = (maxP * i) / 4;
+        const y = yOf(val);
+        markup += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="${cGrid}" stroke-width="1"/>`;
+        markup += `<text x="${padL - 8}" y="${y + 4}" fill="${cMuted}" font-size="11" font-family="Geist Mono, monospace" text-anchor="end">${val.toFixed(0)}</text>`;
+      }
+
+      const path = pts.map((pt, idx) => `${idx === 0 ? 'M' : 'L'}${xOf(pt.d).toFixed(1)},${yOf(pt.p).toFixed(1)}`).join(' ');
+      markup += `<path d="${path}" fill="none" stroke="${cEm}" stroke-width="3"/>`;
+
+      pts.forEach(pt => {
+        markup += `<text x="${xOf(pt.d)}" y="${H - 12}" fill="${cMuted}" font-size="11" font-family="Geist Mono, monospace" text-anchor="middle">${pt.d}m</text>`;
+      });
+
+      const clampedD = Math.max(15, Math.min(130, currentD));
+      const cx = xOf(clampedD), cy = yOf(currentP);
+      markup += `<circle cx="${cx}" cy="${cy}" r="6" fill="${cGold}" stroke="#060f21" stroke-width="2"/>`;
+      markup += `<text x="${cx}" y="${cy - 12}" fill="${cGold}" font-size="12" font-weight="700" font-family="Geist Mono, monospace" text-anchor="middle">${currentP.toFixed(1)} m³/hr</text>`;
+
+      const title = APP_STATE.lang === 'ar' ? 'منحنى انخفاض الإنتاجية مع زيادة مسافة الدفع (D)' : 'Productivity vs. Push Distance (D)';
+      markup += `<text x="${padL}" y="16" fill="${cMuted}" font-size="12" font-weight="700">${title}</text>`;
+
+      svg.innerHTML = markup;
+    }
+
+    /* ================================================================
+       MODULE 5: INTERACTIVE QUIZ & CERTIFICATE
+       ================================================================ */
+    function selectQuizAnswer(qId, optIdx) {
+      APP_STATE.quizAnswers[qId] = optIdx;
+      renderQuiz();
+      updateCertificatePreview();
+      persistState();
+    }
+
+    function resetQuiz(btn) {
+      if (btn && btn.dataset.armed !== 'true') {
+        btn.dataset.armed = 'true';
+        btn.textContent = APP_STATE.lang === 'ar' ? 'اضغط للتأكيد' : 'Click to Confirm';
+        setTimeout(() => {
+          if (btn) {
+            btn.dataset.armed = 'false';
+            btn.textContent = I18N[APP_STATE.lang].resetQuizBtn;
+          }
+        }, 3000);
+        return;
+      }
+      if (btn) {
+        btn.dataset.armed = 'false';
+        btn.textContent = I18N[APP_STATE.lang].resetQuizBtn;
+      }
+      APP_STATE.quizAnswers = {};
+      renderQuiz();
+      updateCertificatePreview();
+      persistState();
+    }
+
+    function computeQuizScore() {
+      let correct = 0;
+      QUIZ_BANK.forEach(q => {
+        if (APP_STATE.quizAnswers[q.id] === q.ans) correct++;
+      });
+      return correct;
+    }
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      const scorePill = document.getElementById('quiz-score-pill');
+      if (!container) return;
+
+      const score = computeQuizScore();
+      if (scorePill) scorePill.textContent = `${score} / ${QUIZ_BANK.length} (${Math.round((score / QUIZ_BANK.length) * 100)}%)`;
+
+      container.innerHTML = QUIZ_BANK.map((q, qIndex) => {
+        const chosen = APP_STATE.quizAnswers[q.id];
+        const hasChosen = chosen !== undefined;
+        const qText = APP_STATE.lang === 'ar' ? q.q_ar : q.q_en;
+        const opts = APP_STATE.lang === 'ar' ? q.opts_ar : q.opts_en;
+        const exp = APP_STATE.lang === 'ar' ? q.exp_ar : q.exp_en;
+
+        const optsHtml = opts.map((optText, oIdx) => {
+          let cls = 'quiz-option';
+          if (hasChosen) {
+            if (oIdx === q.ans) cls += ' correct';
+            else if (oIdx === chosen) cls += ' wrong';
+          }
+          return `
+            <button type="button" class="${cls}" onclick="selectQuizAnswer('${q.id}', ${oIdx})">
+              <span style="font-family: var(--font-label); font-weight:700;">${String.fromCharCode(65 + oIdx)}.</span>
+              <span>${optText}</span>
+            </button>
+          `;
+        }).join('');
+
+        const expHtml = hasChosen
+          ? `<div class="inline-feedback ${chosen === q.ans ? 'success' : 'error'} visible">${exp}</div>`
+          : '';
+
+        return `
+          <div class="quiz-card">
+            <div style="font-weight: 700; color: var(--on-surface);">
+              <span style="color: var(--gold); font-family: var(--font-label);">Q${qIndex + 1}.</span> ${qText}
+            </div>
+            <div class="quiz-options">${optsHtml}</div>
+            ${expHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateCertificatePreview() {
+      const nameIn = document.getElementById('cert-trainee-name');
+      const affilIn = document.getElementById('cert-affiliation');
+      const nameDisp = document.getElementById('cert-name-display');
+      const affilDisp = document.getElementById('cert-affil-display');
+      const scoreDisp = document.getElementById('cert-score-display');
+      const dlBtn = document.getElementById('download-cert-btn');
+      const msgEl = document.getElementById('cert-eligibility-msg');
+
+      const score = computeQuizScore();
+      const pct = Math.round((score / QUIZ_BANK.length) * 100);
+      const passed = score >= 6;
+
+      if (nameDisp && nameIn) nameDisp.textContent = nameIn.value.trim() || 'Eng. Ibrahim Mohamed';
+      if (affilDisp && affilIn) affilDisp.textContent = affilIn.value.trim() || 'Al-Azhar University';
+      if (scoreDisp) scoreDisp.textContent = `${score} / ${QUIZ_BANK.length} (${pct}%)`;
+      if (dlBtn) dlBtn.disabled = !passed;
+      if (msgEl) {
+        if (passed) {
+          msgEl.style.color = getToken('--tertiary');
+          msgEl.textContent = APP_STATE.lang === 'ar'
+            ? `تهانينا! لقد اجتزت الاختبار بنسبة ${pct}% ويمكنك الآن تحميل الشهادة الرسمية.`
+            : `Congratulations! You passed with ${pct}% and unlocked your official certificate.`;
+        } else {
+          msgEl.style.color = getToken('--on-surface-variant');
+          msgEl.textContent = I18N[APP_STATE.lang].certLockedMsg;
+        }
+      }
+    }
+
+    function downloadCertificatePng() {
+      const score = computeQuizScore();
+      if (score < 6) return;
+      const pct = Math.round((score / QUIZ_BANK.length) * 100);
+      const trainee = document.getElementById('cert-trainee-name')?.value.trim() || 'Eng. Ibrahim Mohamed';
+      const affil = document.getElementById('cert-affiliation')?.value.trim() || 'Al-Azhar University';
+
+      const c = document.createElement('canvas');
+      c.width = 1200;
+      c.height = 820;
+      const ctx = c.getContext('2d');
+
+      // Cream background & double gold/royal borders
+      ctx.fillStyle = '#fcfaf2';
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.strokeStyle = '#b8860b';
+      ctx.lineWidth = 14;
+      ctx.strokeRect(24, 24, c.width - 48, c.height - 48);
+      ctx.strokeStyle = '#1d4ed8';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(46, 46, c.width - 92, c.height - 92);
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#1d4ed8';
+      ctx.font = 'bold 26px Cairo, sans-serif';
+      ctx.fillText(I18N[APP_STATE.lang].certUniHeader, 600, 125);
+
+      ctx.fillStyle = '#b8860b';
+      ctx.font = 'bold 46px Cairo, sans-serif';
+      ctx.fillText(I18N[APP_STATE.lang].certMainTitle, 600, 215);
+
+      ctx.fillStyle = '#334155';
+      ctx.font = '24px Cairo, sans-serif';
+      ctx.fillText(I18N[APP_STATE.lang].certGrantText, 600, 290);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 42px Cairo, sans-serif';
+      ctx.fillText(trainee, 600, 365);
+
+      ctx.fillStyle = '#059669';
+      ctx.font = 'bold 22px Cairo, sans-serif';
+      ctx.fillText(affil, 600, 415);
+
+      ctx.fillStyle = '#334155';
+      ctx.font = '23px Cairo, sans-serif';
+      ctx.fillText(I18N[APP_STATE.lang].certBodyText, 600, 490);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.font = 'bold 26px monospace';
+      ctx.fillText(`${score} / 10 (${pct}%)  •  2026-11-14`, 600, 560);
+
+      ctx.strokeStyle = '#b8860b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(140, 620);
+      ctx.lineTo(1060, 620);
+      ctx.stroke();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 22px Cairo, sans-serif';
+      ctx.fillText(I18N[APP_STATE.lang].certSupLabel, 340, 675);
+      ctx.fillText(I18N[APP_STATE.lang].certDevLabel, 860, 675);
+
+      ctx.fillStyle = '#1d4ed8';
+      ctx.fillText(I18N[APP_STATE.lang].certSupName, 340, 715);
+      ctx.fillText(I18N[APP_STATE.lang].certDevName, 860, 715);
+
+      const dataUrl = c.toDataURL('image/png');
+      const base64 = dataUrl.split(',')[1];
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === 'function') {
+        window.notebookAppApi.triggerFileDownload({
+          content: base64,
+          contentType: 'image/png',
+          encoding: 'base64',
+          filename: 'AlAzhar_Surveying_Certificate.png'
+        });
+      }
+    }
+
+    /* ================================================================
+       INITIALIZATION & API SHIM LIFECYCLE
+       ================================================================ */
+    async function initApp() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === 'function') {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved) {
+            if (saved.lang) APP_STATE.lang = saved.lang;
+            if (typeof saved.loggedIn === 'boolean') APP_STATE.loggedIn = saved.loggedIn;
+            if (saved.username) APP_STATE.username = saved.username;
+            if (saved.activePage) APP_STATE.activePage = saved.activePage;
+            if (Array.isArray(saved.profileRows)) APP_STATE.profileRows = saved.profileRows;
+            if (Array.isArray(saved.gridNodes)) APP_STATE.gridNodes = saved.gridNodes;
+            if (saved.quizAnswers) APP_STATE.quizAnswers = saved.quizAnswers;
+          }
+        }
+      } catch (e) {
+        // Proceed with defaults if no saved state
+      }
+
+      applyTranslations();
+      if (APP_STATE.loggedIn) {
+        unlockPlatformUI();
+      }
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === 'function') {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
